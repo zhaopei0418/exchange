@@ -1,0 +1,83 @@
+Plik readme produktu IBM MQ dla wielu platform
+
+Streszczenie
+--------
+Obecnie plik readme dla produktu IBM(R) MQ znajduje siê w serwisie WWW.
+
+Informacje na temat znanych ograniczeñ i informacje pokrewne dla
+tego produktu mo¿na uzyskaæ pod nastêpuj±cym adresem URL:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Informacje o prawach autorskich i znakach towarowych
+-----------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Uwagi
+-------
+INTERNATIONAL BUSINESS MACHINES CORPORATION DOSTARCZA
+TÊ PUBLIKACJÊ W STANIE, W JAKIM SIÊ ZNAJDUJE ("AS IS") BEZ
+UDZIELANIA JAKICHKOLWIEK GWARANCJI (W TYM TAK¯E RÊKOJMI), WYRA¬NYCH LUB
+DOMNIEMANYCH,
+A W SZCZEGÓLNO¦CI DOMNIEMANYCH GWARANCJI PRZYDATNO¦CI HANDLOWEJ, PRZYDATNO¦CI DO OKRE¦LONEGO
+CELU ORAZ GWARANCJI, ¯E PUBLIKACJA NIE NARUSZA PRAW OSÓB TRZECICH.
+Ustawodawstwa niektórych krajów nie dopuszczaj± zastrze¿eñ dotycz±cych gwarancji
+wyra¼nych lub domniemanych w odniesieniu do pewnych transakcji; w takiej sytuacji
+powy¿sze zdanie nie ma zastosowania.
+
+Informacje zawarte w tej publikacji mog± zawieraæ nie¶cis³o¶ci techniczne lub b³êdy drukarskie. Informacje te s± okresowo aktualizowane, a zmiany te zostan± uwzglêdnione w kolejnych
+wydaniach tej publikacji. IBM zastrzega sobie prawo do wprowadzania ulepszeñ i/lub zmian
+w produktach i/lub programach opisanych w tej publikacji w dowolnym czasie, bez
+wcze¶niejszego powiadomienia.
+
+WARUNKI, UWAGI I INFORMACJE DOTYCZ¡CE LICENCJI OSÓB TRZECICH
+
+Umowa licencyjna dla tego projektu odwo³uje siê do niniejszego pliku w zakresie
+szczegó³owych warunków maj±cych zastosowanie do kodu oprogramowania osób trzecich
+zawartego w tym produkcie, jak równie¿ w zakresie uwag i innych informacji, które IBM
+musi udostêpniæ w ramach swych licencji na okre¶lony kod oprogramowania. Odpowiednie
+warunki, uwagi i inne informacje s± udostêpnione lub przywo³ane poni¿ej. Zwracamy uwagê,
+¿e jakakolwiek wersja jêzykowa inna ni¿ angielska jest nieoficjalna i udostêpniana jest
+jedynie dla wygody u¿ytkownika. Angielska wersja poni¿szych licencji, udostêpniana jako
+czê¶æ angielskojêzycznej wersji niniejszego pliku, jest wersj± oficjaln±.
+
+Bez wzglêdu na stanowi±ce inaczej warunki jakichkolwiek umów zawartych przez Klienta z
+IBM lub z podmiotem powi±zanym lub afiliowanym IBM (które to strony ³±cznie zwane s±
+"IBM") okre¶lony poni¿ej kod oprogramowania stanowi "Komponenty Wy³±czone" i podlega
+nastêpuj±cych warunkom:
+
+* Komponenty Wy³±czone s± dostarczane w stanie, w jakim siê znajduj± "AS IS";
+* IBM NIE UDZIELA JAKICHKOLWIEK GWARANCJI, WYRA¬NYCH CZY DOMNIEMANYCH (W TYM
+  RÓWNIE¯ WY£¡CZA RÊKOJMIÊ), ANI NIE USTALA WARUNKÓW W ZAKRESIE KOMPONENTÓW
+  WY£¡CZONYCH, A W SZCZEGÓLNO¦CI NIE UDZIELA GWARANCJI NIENARUSZANIA CZY
+  NIEZAK£ÓCANIA PRAW OSÓB TRZECICH, DOMNIEMANYCH GWARANCJI CZY WARUNKÓW
+  PRZYDATNO¦CI HANDLOWEJ I PRZYDATNO¦CI DO OKRE¦LONEGO CELU;
+* IBM nie bêdzie ponosiæ odpowiedzialno¶ci wobec Klienta za jakiekolwiek
+  roszczenia odnosz±ce siê do Komponentów Wy³±czonych ani nie bêdzie
+  zabezpieczaæ i chroniæ Klienta przed nimi;
+* IBM nie bêdzie ponosiæ odpowiedzialno¶ci za jakiekolwiek szkody bezpo¶rednie,
+  po¶rednie, uboczne, szczególne, powoduj±ce naruszenie dóbr osobistych, szkody,
+  których nie mo¿na by³o przewidzieæ przy zawieraniu umowy, powsta³e w odniesieniu
+  do Komponentów Wy³±czonych.
+
+
+Znaki towarowe ---------- Nastêpuj±ce nazwy s± znakami towarowymi International Business
+Machines Corporation w Stanach Zjednoczonych i/lub w innych krajach: AIX FFST IBM i IBM
+MQSeries SupportPac WebSphere z/OS 
+
+Microsoft i Windows s± znakami towarowymi Microsoft Corporation w Stanach Zjednoczonych
+i/lub w innych krajach.
+
+Java oraz wszystkie znaki towarowe i logo dotycz±ce jêzyka Java s± znakami towarowymi lub
+zastrze¿onymi znakami towarowymi Oracle i/lub przedsiêbiorstw afiliowanych Oracle.
+
+UNIX jest zastrze¿onym znakiem towarowym The Open Group w Stanach Zjednoczonych i w
+innych krajach.
+
+Linux jest zastrze¿onym znakiem towarowym Linusa Torvaldsa w Stanach Zjednoczonych i/lub
+w innych krajach.
+
+Nazwy innych przedsiêbiorstw, produktów lub us³ug mog± byæ znakami towarowymi lub znakami us³ug innych podmiotów.

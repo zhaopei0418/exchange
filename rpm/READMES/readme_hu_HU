@@ -1,0 +1,85 @@
+A IBM MQ többplatformos readme fájlja
+
+Kivonat
+--------
+A IBM(R) MQ readme fájlja most már elérhetõ online.
+
+A termékkel kapcsolatos ismert korlátozásokat és a kapcsolódó információkat
+a következõ URL címen találja:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Szerzõi jogi és védjegyekkel kapcsolatos információk
+----------------------------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Nyilatkozatok
+-------------
+AZ INTERNATIONAL BUSINESS MACHINES CORPORATION E KIADVÁNYT A JELENLEGI
+FORMÁJÁBAN, BÁRMIFÉLE KIFEJEZETT VAGY VÉLELMEZETT GARANCIA NÉLKÜL ADJA KÖZRE,
+IDEÉRTVE, DE NEM KIZÁRÓLAG A JOGSÉRTÉS KIZÁRÁSÁRA, A KERESKEDELMI
+ÉRTÉKESÍTHETÕSÉGRE ÉS BIZONYOS CÉLRA VALÓ ALKALMASSÁGRA VONATKOZÓ VÉLELMEZETT
+GARANCIÁKAT.
+Bizonyos joghatóságok nem engedélyezik egyes tranzakciók kifejezett vagy
+vélelmezett garanciáinak kizárását, így elképzelhetõ, hogy az elõzõ bekezdés
+Önre nem vonatkozik.
+
+Jelen dokumentum tartalmazhat technikai, illetve szerkesztési hibákat. A
+kiadványban leírt információk bizonyos idõnként módosításra kerülnek; a
+módosításokat a kiadvány új kiadásai tartalmazzák. Az IBM mindennemû értesítés
+nélkül fejlesztheti és/vagy módosíthatja a kiadványban tárgyalt termékeket
+és/vagy programokat.
+
+HARMADIK FÉLTÕL SZÁRMAZÓ LICENCFELTÉTELEK ÉS -KIKÖTÉSEK, NYILATKOZATOK ÉS
+INFORMÁCIÓK
+
+A termék licencszerzõdése erre a fájlra hivatkozik a termékben felhasznált
+harmadik féltõl származó szoftverkód feltételeit és kikötéseit illetõen,
+illetve olyan megjegyzések és egyéb információk kapcsán, amiket az IBM-nek
+bizonyos szoftverkódok licence alapján biztosítania kell. E feltételek,
+kikötések, megjegyzések és egyéb információk vagy ezek hivatkozásai alább
+olvashatók. Az alábbi licencek nem angol nyelvû változatai nem hivatalosak,
+csupán a könnyebb megértést szolgálják. Az alábbi licencek hivatalos, angol
+nyelvû változatai a fájl angol nyelvû változatában találhatók.
+
+Függetlenül az IBM-mel és bármely kapcsolódó vagy hozzá tartozó entitással
+(összességében "IBM") kötött bármely más szerzõdések feltételeitõl és
+korlátozásaitól az alább azonosított harmadik féltõl származó szoftverkódok
+"Kivételes összetevõk", melyekre a következõ feltételek és korlátozások
+vonatkoznak:
+
+* A Kivételes összetevõk "JELENLEGI FORMÁJUKBAN" kerülnek közreadásra.
+* A KIVÉTELES ÖSSZETEVÕKKEL KAPCSOLATBAN AZ IBM ELHÁRÍT MINDEN KIFEJEZETT ÉS
+VÉLELMEZETT GARANCIÁT IDEÉRTVE, DE NEM KIZÁRÓLAG A JOGSÉRTÉS ÉS BEAVATKOZÁS
+KIZÁRÁSÁRA, A KERESKEDELMI ÉRTÉKESÍTHETÕSÉGRE ÉS AZ ADOTT CÉLRA VALÓ
+ALKALMASSÁGRA VONATKOZÓ VÉLELMEZETT GARANCIÁKAT.
+* Az IBM nem felelõs a Kivételes összetevõk által okozott bármilyen kárért, és
+ezért nem fog kártérítést sem nyújtani.
+* Az IBM nem vonható felelõsségre a Kivételes összetevõkkel kapcsolatban
+felmerült közvetlen, közvetett, véletlen, specifikus, példaértékû, büntetõ vagy
+következményes káreseményekért.
+
+
+Védjegyek
+----------
+ Az alábbi kifejezések az International Business Machines Corporation védjegyei
+az Egyesült Államokban és/vagy más országokban: AIX FFST IBM i IBM MQSeries
+SupportPac WebSphere z/OS 
+
+A Microsoft és a Windows a Microsoft Corporation védjegye az Egyesült
+Államokban és/vagy más országokban.
+
+A Java, valamint minden Java-alapú jelzés és logó az Oracle és/vagy
+társvállalatainak védjegye vagy bejegyzett védjegye.
+
+A UNIX a The Open Group bejegyzett védjegye az Egyesült Államokban és más
+országokban.
+
+A Linux Linus Torvalds bejegyzett védjegye az Egyesült Államokban és/vagy más
+országokban.
+
+Más cégek, termékek vagy szolgáltatások neve mások védjegye vagy szolgáltatás
+védjegye lehet.

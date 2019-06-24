@@ -1,0 +1,68 @@
+IBM MQ for Multi-platforms Ü¨ÐÂ ReadMe
+
+èòÓÑ
+--------
+IBM MQ Îû ReadMe Ü¢ÇãÆ«Ú·îÀÄ¸Ì½Úµ¡¤
+
+îùÝßÝ¾ÅèÄ¶ URL¡¢ÅèÌ½ÚµÆÛÜ¨ÐÂÎûÄØÏ¡ÓîÌ±Å¯ÒÞùÃæñØ¹¡¨
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ááÉ¢ûâêØÙ¸íºæñØ¹
+-----------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+ôøÍü
+-------
+International Business Machines Corporation Æ·Ëí¡ÖÜ¢ÎÓ¡×
+ßÈËòÆÛÅøÎêÐÂ¡¢ÄâßÈËòÇ¶ÈôÍüÆüÍÐó¼ÆüÄæÏñøý¡¢Ì§ÄãÅýÑÄÅâÄâ
+ÓîÍõÄâç°Å°Ý½Ìù¡£Æ«ÙÇÍÌÍÐÖÖÌùÆøÎûÄæïËÆîÍÌÎûö¡ÉÖÏñøý¡¤
+È´ËèõÝÙ´ÄâÄøÝÂÍóÛ¹ÇãÖÖÌùÇ¨ÍøÄãÎûÍüÆüÍÐó¼ÆüÏñøý¡¢ÇÞÈº¡¢ÝÕâúôøÍüè×ÚÀÆ«×äÄâïËÆî¡¤
+
+ÆÛæñØ¹ÄãÆ«×ääÄÈ´ÊÀÝ´Ä¸ÍÐÚêÎêÇÍÌ­Ä¸ÎûÝÅë¨¡¤ÇÞÈº¡¢IBM äÄÌùßæÔºÓÔ¡§ËäÙòÔºÓÔÑ¥ÎûÄùÕ©×ÊÄ«ä»ÎêÄã¡¤
+ÇÑÕë¡¢IBM ÚµòñÕëÔºÊÑÅ¯/ÍÐüÈÊÕÆÛÅøÎêÐÂÄãÍÔßÈÅ¯ÎûÜ¨ÐÂÅ¯/ÍÐá£È¢¡¢ÈÔÄâÆ¶ÈçÝ×Ï¡¡¤
+
+ÜÉÄµÄ©ÚæûâÛ¾à¡¡£ÎÃãôËçâúÌÏæñØ¹
+
+ÆÛÜ¨ÐÂÄæÚæûâÇÙÒüüéâ¸ÐêÅÂóôïåÆÛóòÕù¡¢ÅèÌ½ÚµÆÛÜ¨ÐÂòñÏáÄæ
+ÜÉÄµÄ©ÝÔüÕá£È¢î£ÍÔïËÆîÛ¾à¡ÎûÒÞùÃæÛÜØæñÕè¡¢ÅèÅ¯ IBM âüËí
+ÖÖÌùÝÔüÕá£È¢î£ÚæûâßÈËòá¿â¸ÐêÅÂÎûÖÖÌùôøÍüÅ¯Ì§ÅìæñØ¹¡¤ÅèÄ¶
+ßÈËòÍÐÙ¶äùÒÞùÃÛ¾à¡¡£ôøÍüÅ¯Ì§ÅìæñØ¹¡¤îùÎÃãô¡¢ÅèÄ¶ÏæÓÁÅÆÎêÎû
+ÚæûâÝçÄâÑÒÆßÈ¢ÎêÆÛ¡¢Æ·ËòÙ¶ÈÓÄæÆî¡¤ÆÛóòÕùÅèÓÁÅÆÎêÍÔßÈËòÄæ
+ÇñÄ¶ÓÁÅÆÎêÚæûâÄßÑÒÆßÈ¢ÎêÆÛ¡¤
+
+ôëËð  â¸ÐêÅÂêØ IBM ÍÐêØ IBM ÒÞùÃÄæÄüÆ³ÍÐùÃÏûÇºäÆ¡¾ÅèÄ¶
+ÜÓê¢ IBM¡¿ÄæÌ§ÅìÇÙÒüÄãÆ¶È´Ý½Ìù¡¢Ä¶ÇÄÜÉÄµÄ©ÝÔüÕá£È¢î£
+ÑÀÍüÒ³¡ÖÚêØæÄ÷Çµ¡×ËäÌ¿Ä¶ÇÄÛ¾à¡ÍíÊÖ¡¨
+
+* ¡ÖÚêØæÄ÷Çµ¡×ÑÒËí¡ÖÜ¢Îí¡×ßÈËò
+* ÄâßÈËòÇ¶ÈôÍüÆüÅ¯ó¼ÆüÄæÏñøýêØÛ¾Çµ¡¢Ì§ÄãÅýÑÄÅâÄâÓîÍõàÒÏëûâÈçÒ³
+ÍÐÄÛöÆÄæÏñøý¡£ÅèÅ¯ïËÙÇÍÌêØÜÊÇÙÖÖÖ±ÆøÄæÄæó¼ÆüÏñøýêØÛ¾Çµ¡¤
+* Ä»êØ¡ÖÚêØæÄ÷Çµ¡×ÒÞùÃÄæÇ¶ÈôÎÎÑ£Ä¸ÅäÚ¯ÍÐÓÑÊå¡¢IBM ÉáÄâè×  â¸ÐêÅÂÓ×ÝÊÍÐïªóÁ
+* Ä»êØ¡ÖÚêØæÄ÷Çµ¡×ÒÞùÃÄæÇ¶ÈôÎþÚÙ¡£âæÚÙ¡£ÏáÚ§¡£ÖÖÖ±¡£ø´êÈÍÌÍÐÓÏÆíÄæä´Õ¤¡¢
+IBM äÍÄâÓ×ÝÊ¡¤
+
+
+
+Ù¸íº
+----------
+Ä¶ÇÄâ¤ãðÑÒ International Business Machines Corporation ÇãÓ¡ÙÏÅ¯/ÍÐÌ§ÅìÙÏÕ¥
+ÍÐÇâÙ´ÎûÙ¸íº¡¨
+AIX FFST IBM i IBM MQSeries SupportPac
+WebSphere z/OS 
+
+Microsoft Å¯ Windows ÑÒ Microsoft Corporation ÇãÓ¡ÙÏÅ¯/ÍÐ
+Ì§ÅìÙÏÕ¥ÍÐÇâÙ´ÎûÙ¸íº¡¤
+
+Java Å¯ÍÔÈ´ Java ÐÎÙ¸íºÌÏíºë¢ÑÒ Oracle Å¯/ÍÐÌ§ÄÍÄüÆ³ÎûÙ¸íºÍÐ
+â¡ÅõÙ¸íº¡¤
+
+UNIX ÑÒ The Open Group ÇãÓ¡ÙÏÅ¯Ì§ÅìÙÏÕ¥ÍÐÇâÙ´Îûâ¡ÅõÙ¸íº¡¤
+
+Linux ÑÒ Linus Torvalds ÇãÓ¡ÙÏÅ¯/ÍÐÌ§ÅìÙÏÕ¥ÍÐÇâÙ´Îûâ¡ÅõÙ¸íº¡¤
+
+
+Ì§ÅìÄüÆ³¡£Ü¨ÐÂÍÐÎ¤Ù­ÇØê¢¡¢Æ«×äÑÒÌ§ÅìÄüÆ³ÎûÙ¸íºÍÐÎ¤Ù­íºë¢¡¤

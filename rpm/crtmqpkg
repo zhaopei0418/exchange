@@ -1,0 +1,175 @@
+#!/bin/sh
+###########################################################################
+# @(#) MQMBID sn=p900-L160520.DE su=_6zq1EB58Eearh6Qyg9d9Dg pn=install/unix/linux_2/crtmqpkg.sh
+###########################################################################
+#   <copyright 
+#   notice="lm-source-program" 
+#   pids="5724-H72" 
+#   years="2011,2014" 
+#   crc="681868235" > 
+#   Licensed Materials - Property of IBM  
+#    
+#   5724-H72 
+#    
+#   (C) Copyright IBM Corp. 2011, 2014 All Rights Reserved.  
+#    
+#   US Government Users Restricted Rights - Use, duplication or  
+#   disclosure restricted by GSA ADP Schedule Contract with  
+#   IBM Corp.  
+#   </copyright> 
+###########################################################################
+#
+# Command line:
+#
+#   crtmqpkg suffix
+#
+#    suffix is a 1 to 16 character string which will be added to
+#    the original rpm packagename.
+#
+#
+# Environment variables:
+#  Note: none are required if run from the CD image as ./crtmqpkg
+#
+#  MQ_CDROOT -  root of the installation CD or downloaded install files.
+#  SPECDIR - directory containing the rpm spec files - MQ_CDROOT/repackage
+#  RPMDIR  - directory containing the original rpms  - MQ_CDROOT
+#  TMPDIR  - working directory and output rpms  ( defaults to /var/tmp )
+#
+###########################################################################
+final_rc=0
+if [ $# -ne 1 ] || [ $1 = "?" ] || [ $1 = "-?" ]
+  then
+   echo "Usage: crtmqpkg suffix" >&2
+   exit 255
+fi
+PACKAGE_SUFFIX=$1
+
+# Check we are running as root
+idnum=`id -u`
+if [ ${idnum} -ne 0 ]
+then
+  echo "ERROR: You must be root to run this script"
+  exit 255
+fi
+
+# Validate installation name here
+if [ ${#PACKAGE_SUFFIX} -gt 16 ]
+  then
+   echo "ERROR: package suffix too long - maximum is 16 characters"
+   exit 255
+fi
+
+TMP1=`echo ${PACKAGE_SUFFIX} | grep [[:punct:]] >&1 `
+if [ $? -eq 0 ]
+  then
+   echo "ERROR: Invalid package suffix \"$TMP1\" - must be alphanumeric"
+   exit 255
+fi
+
+TMPDIR=${TMPDIR:-/var/tmp}
+###########################################################################
+# workdir is a temporary directory for repackaging
+# outputdir is where the rpms will be written
+# inputdir is where the original rpms are
+# specdir is where the original rpm spec files are
+###########################################################################
+MQ_CDROOT=${MQ_CDROOT:-$PWD}
+workdir=${TMPDIR}/mq_repackage
+outputdir=${TMPDIR}/mq_rpms/${PACKAGE_SUFFIX}
+specdir=${SPECDIR:-$MQ_CDROOT/repackage}
+inputdir=${RPMDIR:-$MQ_CDROOT}
+
+# Check that rpmbuild is available. This is provided by the package named:
+# RedHat: rpm-build
+# SuSE:   rpm
+# Ubuntu: rpm
+if [ ! -x /usr/bin/rpmbuild ]
+  then
+    echo "ERROR: Unable to execute \"/usr/bin/rpmbuild\" - required for packaging."
+    echo "       Check that you have the \"rpm-build\" package installed on your system,"
+    echo "       or which ever package provides \"rpmbuild\" on your Linux distribution."
+    exit 255
+fi
+
+# cpio located at /bin/cpio on the Debian based distributions
+if [ -x /usr/bin/cpio ]
+  then
+    CPIOBIN="/usr/bin/cpio"
+elif [ -x /bin/cpio ]
+  then
+    CPIOBIN="/bin/cpio"
+else
+   echo "ERROR: Unable to execute \"cpio\" - required for repackaging"
+   exit 255
+fi
+
+rpm_count=`ls -1 ${inputdir}/MQSeries*.rpm 2>/dev/null | wc -l`
+if [ $rpm_count -lt 1 ]
+  then
+    echo "ERROR: \"${inputdir}\" does not contain MQSeries rpm files"
+    exit 255
+fi
+spec_count=`ls -1 ${specdir}/MQSeries*.spec 2>/dev/null | wc -l`
+if [ $spec_count -lt 1 ]
+  then
+    echo "ERROR: \"${specdir}\" does not contain MQSeries spec files"
+    exit 255
+fi
+rpmarch=`echo ${inputdir}/MQSeries*.rpm | head -n1 | awk -F . '{print $(NF-1)}'`
+echo "Repackaging WebSphere MQ for \"$rpmarch\" using suffix \"${PACKAGE_SUFFIX}\""
+mkdir -p $outputdir/$rpmarch
+rm -rf $workdir
+ls -1 ${inputdir}/MQSeries*.rpm | while read rpmfile
+ do
+  packagename=`echo $(basename $rpmfile) | awk -F - '{print $1}'`
+  new_packagename=${packagename}_${PACKAGE_SUFFIX}
+  BROOT=`cat $specdir/$packagename*.spec | grep BuildRoot: | sed 's# ##g' | awk -F: '{print $2}'`
+  mkdir -p $workdir/$packagename
+  cd $workdir/$packagename
+
+  #  Extract payload from rpm file
+  OUTPUT=`rpm2cpio ${inputdir}/$packagename*.rpm | ${CPIOBIN} -id  2>&1`
+  cpio_rc=$?
+  if [ $cpio_rc -ne 0 ]
+    then
+      echo "ERROR: Return code \"$cpio_rc\" from rpm2cpio | cpio command for package \"${packagename}}\""
+      echo "Error message was:"
+      echo "${OUTPUT}"
+      exit 255
+  fi
+  printf "%c#"
+  # Massage the spec file
+  cat $specdir/$packagename*.spec |
+   sed s#${BROOT}//##g |
+   sed s#${BROOT}/##g |
+   sed s#${packagename}#${new_packagename}#g |
+   grep -v "%global" |
+   grep -v "Requires: gtk" |
+   awk -v PACKAGE_SUFFIX=${PACKAGE_SUFFIX} '$1 ~ /Requires:/ {print  $1" " $2"_"PACKAGE_SUFFIX" " $3 " "$4 } $1 !~ /Requires:/ {print}' > $packagename.spec
+  # build the new rpms
+  logfile=${workdir}/$packagename/rpmbuild.$$.log
+  rpmbuild  --quiet --define "_tmppath $TMPDIR" --define "_rpmdir $outputdir"  --define "_builddir $workdir/$packagename" --define "__os_install_post %{nil}"  --target=${rpmarch} --buildroot $workdir/$packagename/buildroot -bb $packagename.spec  > $logfile 2>&1
+  rpmbuild_rc=$?
+  printf "%c#"
+  if [ $rpmbuild_rc -ne 0 ]
+    then
+      echo "ERROR: Return code \"$rpmbuild_rc\" from rpmbuild command for package \"${packagename}_${PACKAGE_SUFFIX}\""
+      echo "       See logfile at \"${logfile}\""
+      final_rc=$rpmbuild_rc
+    else
+      cd - > /dev/null
+      rm ${logfile}
+      rm -rf $workdir/$packagename
+  fi
+ done
+ printf "%c#\n"
+if [ $final_rc -eq 0 ]
+  then
+   rmdir $workdir
+   echo "Repackaging complete  - rpms are at \"$outputdir/$rpmarch\""
+   exit 0
+  else
+   echo "Repackaging ended with errors - see messages above"
+   exit 4
+fi
+

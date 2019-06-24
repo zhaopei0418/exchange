@@ -1,0 +1,74 @@
+Fichier Readme de IBM MQ for Multi-platforms
+
+Résumé
+--------
+Le fichier Readme de IBM(R) MQ est à présent disponible en ligne.
+
+Veuillez consulter l'URL suivante pour prendre connaissance des limitations connues et des informations
+connexes relatives à ce produit :
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Informations de droits d'auteur et de marques
+--------------------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Remarques
+-------
+LE PRESENT DOCUMENT EST LIVRE
+EN L'ETAT SANS AUCUNE GARANTIE EXPLICITE OU IMPLICITE. IBM DECLINE NOTAMMENT TOUTE
+RESPONSABILITE RELATIVE A CES INFORMATIONS EN CAS DE CONTREFACON AINSI QU'EN CAS DE DEFAUT
+D'APTITUDE A L'EXECUTION D'UN TRAVAIL DONNE.
+Certaines juridictions
+n'autorisent pas l'exclusion des garanties implicites, auquel cas
+l'exclusion ci-dessus ne vous sera pas applicable.
+
+Le présent document peut contenir des inexactitudes ou des
+coquilles. Ce document est mis à jour périodiquement. Chaque nouvelle
+édition inclut les mises à jour. IBM peut, à tout moment et sans préavis, modifier les
+produits et logiciels décrits dans ce document.
+
+MODALITES, REMARQUES ET INFORMATIONS RELATIVES AUX LICENCES DE PRODUITS
+
+Le contrat de licence pour ce produit vous renvoie au présent
+fichier pour plus de
+détails sur les dispositions applicables au code de logiciel tiers,
+et pour certaines remarques et autres informations qu'IBM
+doit vous fournir en vertu des licences sur certains codes de logiciel. Les dispositions applicables, remarques et autres informations importantes sont
+fournies ou référencées ci-dessous. Veuillez noter que toute version qui n'est pas en anglais des licences ci-dessous est officieuse et qu'elle vous est fournie uniquement pour votre commodité. La version anglaise des licences ci-dessous, fournie avec la version anglaise de ce fichier, est la version officielle.
+
+Sauf disposition contraire de tout autre contrat conclu entre vous et IBM ou l'une de ses filiales ou sociétés affiliées (collectivement "IBM"), les codes  tiers identifiés ci-après sont des "Composants exclus" qui sont soumis aux dispositions suivantes :
+
+* les Composants Exclus sont fournis "EN L'ETAT"
+* IBM DECLINE TOUTE RESPONSABILITE EXPLICITE OU IMPLICITE,
+CONCERNANT LES COMPOSANTS EXCLUS, NOTAMMENT, SANS QUE CELA SOIT
+LIMITATIF, EN MATIERE NOTAMMENT D'APTITUDE À L'EXECUTION D'UN TRAVAIL DONNE ET DE GARANTIE
+DE NON-CONTREFAÇON OU PARASITISME
+* IBM ne peut en aucun cas être tenue responsable ni ne vous indemnisera pour toute réclamation relative
+aux Composants Exclus
+* IBM ne peut être tenue responsable pour tout dommage direct, indirect, accessoire, spécial,
+à titre de réparation exemplaire lié
+aux Composants Exclus.
+
+
+Marques
+----------
+Les termes qui suivent sont des marques d'International Business Machines Corporation aux Etats-Unis et/ou dans certains autres pays : AIX FFST IBM i IBM MQSeries SupportPac
+WebSphere z/OS 
+
+Microsoft et Windows sont des marques de Microsoft Corporation aux
+Etats-Unis et/ou dans certains autres pays.
+
+Java ainsi que tous les logos et toutes les marques incluant Java sont des marques
+d'Oracle et/ou de ses sociétés affiliées.
+
+UNIX est une marque enregistrée de The Open Group aux Etats-Unis et/ou dans certains
+autres pays.
+
+Linux est une marque de Linus Torvalds aux Etats-Unis et/ou dans certains autres pays.
+
+D'autres sociétés sont propriétaires des autres marques, noms de produits ou
+services qui pourraient apparaître dans ce document.

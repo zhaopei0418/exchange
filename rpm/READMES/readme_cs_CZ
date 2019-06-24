@@ -1,0 +1,87 @@
+Soubor readme produktu IBM MQ for Multi-platforms
+
+Abstrakt
+--------
+Soubor readme pro IBM(R) MQ je nyní k dispozici online.
+
+Známá omezení a související informace o tomto produktu
+naleznete na této adrese URL:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Informace o copyrightu a ochranných známkách
+--------------------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Poznámky
+--------
+SPOLEÈNOST INTERNATIONAL BUSINESS MACHINES CORPORATION TUTO
+PUBLIKACI POSKYTUJE TAK, JAK JE, BEZ JAKÝCHKOLIV ZÁRUK,
+VYJÁDØENÝCH VÝSLOVNÌ NEBO VYPLÝVAJÍCÍCH Z OKOLNOSTÍ, VÈETNÌ,
+A TO ZEJMÉNA, ZÁRUK NEPORU©ENÍ PRÁV TØETÍCH STRAN,
+PRODEJNOSTI NEBO VHODNOSTI PRO URÈITÝ ÚÈEL.
+Nìkteré právní øády u urèitých transakcí nepøipou¹tìjí vylouèení
+záruk výslovnì vyjádøených nebo vyplývajících z okolností, a proto
+se na vás toto omezení nemusí vztahovat.
+
+Uvedené údaje mohou obsahovat technické nepøesnosti nebo typografické chyby. Údaje zde uvedené jsou pravidelnì upravovány a tyto zmìny budou
+zahrnuty v nových vydáních této publikace. Spoleènost IBM mù¾e kdykoli
+bez upozornìní provádìt vylep¹ení nebo zmìny v produktech èi programech
+popsaných v této publikaci.
+
+PODMÍNKY LICENCE TØETÍCH STRAN, POZNÁMKY A INFORMACE
+
+Licenèní smlouva pro tento produkt odkazuje na tento soubor obsahující
+podrobné informace týkající se podmínek vztahující se na softwarový kód
+tøetích stran obsa¾ený v tomto produktù a urèité poznámky a dal¹í
+informace, je¾ je vám spoleènost IBM v rámci licence k urèitému
+softwarovému kódu povinna poskytnout. Relevantní podmínky, poznámky
+a dal¹í informace jsou uvedeny nebo odkazovány dále. Vezmìte na vìdomí,
+¾e v¹echny verze licencí uvedené dále, je¾ nejsou v angliètinì, jsou
+neoficiální a jsou poskytovány pouze pro usnadnìní porozumìní
+u¾ivatelù. Oficiální verzí licencí je verze v angliètinì, je¾ je
+k dispozici jako souèást tohoto souboru.
+
+Bez ohledu na podmínky jakékoli jiné pøípadné smlouvy mezi vámi
+a spoleèností IBM nebo kteroukoli z pøíbuzných èi pøidru¾ených entit
+(souhrnnì jsou oznaèovány zkratkou "IBM") pøedstavuje softwarový kód
+tøetích stran uvedený dále "vylouèené komponenty" a podléhá
+následujícím podmínkám:
+
+* Vylouèené komponenty jsou poskytovány tak, jak jsou.
+* SPOLEÈNOST IBM SE ZØÍKÁ JAKÝCHKOLI A VE©KERÝCH VYJÁDØENÝCH
+  I VYPLÝVAJÍCÍCH ZÁRUK A PODMÍNEK S OHLEDEM NA VYLOUÈENÉ KOMPONENTY
+  VÈETNÌ, A TO ZEJMÉNA, ZÁRUKY NEPORU©OVÁNÍ ÈI VZÁJEMNÉHO ZASAHOVÁNÍ
+  A VYPLÝVAJÍCÍCH ZÁRUK A PODMÍNEK PRODEJNOSTI A VHODNOSTI
+  PRO URÈITÝ ÚÈEL.
+* Spoleènost IBM není vùèi vám vázána ¾ádnými po¾adavky v souvislosti
+  s vylouèenými komponentami ani vás v souvislosti s nimi neod¹kodní.
+* Spoleènost IBM není odpovìdná za ¾ádné pøímé, nepøímé, náhodné,
+  zvlá¹tní, exemplární, trestné ani následné ¹kody v souvislosti
+  s vylouèenými komponentami.
+
+
+Ochranné známky
+----------
+Následující termíny jsou ochranné známky spoleènosti International Business
+Machines Corporation ve Spojených státech, a pøípadnì v dal¹ích jiných zemích:
+AIX FFST IBM i IBM MQSeries SupportPac
+WebSphere z/OS 
+
+Microsoft a Windows jsou ochranné známky spoleènosti Microsoft Corporation
+ve Spojených státech a pøípadnì v dal¹ích jiných zemích.
+
+Java a v¹echny ochranné známky a loga obsahující slovo Java jsou ochranné
+známky nebo registrované ochranné známky spoleènosti Oracle anebo pøíbuzných spoleèností.
+
+UNIX je registrovaná ochranná známka spoleènosti The Open Group ve Spojených
+státech a pøípadnì v dal¹ích jiných zemích.
+
+Linux je registrovaná ochranná známka Linuse Torvaldse ve Spojených státech
+a pøípadnì v dal¹ích jiných zemích.
+
+Názvy dal¹ích spoleèností, produktù nebo slu¾eb mohou být
+ochrannými známkami nebo znaèkami slu¾eb ostatních spoleèností.

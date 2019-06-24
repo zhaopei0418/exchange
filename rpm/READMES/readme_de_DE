@@ -1,0 +1,79 @@
+Produkt-Readme-Datei für IBM MQ for Multi-platforms
+
+Kurzdarstellung
+---------------
+Die Readme-Datei für IBM(R) MQ ist nun online abrufbar.
+
+Unter folgender URL finden Sie die bekannten Einschränkungen
+und zugehörige Informationen zu diesem Produkt:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Informationen zu Copyright und Marken
+-------------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Bemerkungen
+-----------
+
+Trotz sorgfältiger Bearbeitung können technische Ungenauigkeiten oder
+Druckfehler in dieser Veröffentlichung nicht ausgeschlossen werden. Die
+Angaben in diesem Handbuch werden in regelmäßigen Zeitabständen
+aktualisiert. Die Änderungen werden in Überarbeitungen oder in Technical
+News Letters (TNLs) bekanntgegeben. IBM kann ohne weitere Mitteilung
+jederzeit Verbesserungen und/oder Änderungen an den in dieser
+Veröffentlichung beschriebenen Produkten und/oder Programmen vornehmen.
+
+LIZENZBEDINGUNGEN, BEMERKUNGEN UND INFORMATIONEN VON DRITTHERSTELLERN
+
+Die Lizenzvereinbarung für dieses Produkt enthält einen Verweis auf die
+vorliegende Datei, in der Einzelheiten zu den Vertragsbedingungen, die für
+in diesem Produkt enthaltene Software von Drittherstellern gelten, sowie
+weitere Informationen, die IBM Ihnen im Rahmen der IBM Lizenz für
+bestimmte Software-Codes zur Verfügung stellen muss, aufgeführt sind.
+Dieses Dokument enthält die geltenden Vertragsbedingungen, Bemerkungen und
+Informationen oder Verweise darauf. Bitte beachten Sie, dass alle nicht
+englischen Versionen dieser Lizenzen inoffiziell sind und nur aus Gründen
+der Benutzerfreundlichkeit bereitgestellt werden. Die offizielle Version
+dieser Lizenzen ist die englische Version, die in der englischen Version
+dieser Datei bereitgestellt wird.
+
+Ungeachtet der Vertragsbedingungen oder anderer Vereinbarungen, die Sie
+mit IBM oder verbundenen Unternehmen (allgemein als "IBM" bezeichnet)
+abgeschlossen haben, wird der Software-Code des Drittherstellers als
+"ausgeschlossene Komponenten" bezeichnet, die den folgenden
+Vertragsbedingungen unterliegen:
+
+* Die ausgeschlossenen Komponenten werden ohne Wartung
+(auf "as-is"-Basis) zur Verfügung gestellt
+* Hinsichtlich der ausgeschlossenen Komponenten übernimmt IBM keine Gewährleistung,
+einschließlich einer Gewährleistung für die Freiheit der Rechte Dritter, die
+Handelsüblichkeit und die Verwendungsfähigkeit für einen bestimmten Zweck
+* IBM übernimmt keine Verpflichtung, Sie für irgendwelche Schäden hinsichtlich der
+ausgeschlossenen Komponenten schadlos zu halten und haftet nicht für direkte oder
+indirekte Schäden im Zusammenhang mit diesen
+* IBM übernimmt keine Haftung für mittelbare, unmittelbare oder sonstige Folgeschäden
+in Bezug auf die ausgeschlossenen Komponenten.
+
+
+Marken
+----------
+Folgende Namen sind Marken der International Business Machines Corporation
+in den USA und/oder anderen Ländern:
+AIX FFST IBM i IBM MQSeries SupportPac WebSphere z/OS 
+
+Microsoft und Windows sind Marken der Microsoft Corporation in den USA
+und/oder anderen Ländern.
+
+Java und alle auf Java basierenden Marken und Logos sind Marken oder
+eingetragene Marken von Oracle und/oder dessen verbundenen Unternehmen.
+
+UNIX ist eine eingetragene Marke von The Open Group in den USA und anderen
+Ländern.
+
+Linux ist in gewissen Ländern eine eingetragene Marke von Linus Torvalds.
+
+Weitere Unternehmens-, Produkt- oder Servicenamen können Marken anderer Hersteller sein.

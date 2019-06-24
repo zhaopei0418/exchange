@@ -1,0 +1,87 @@
+Product readme for IBM MQ for Multi-platforms
+
+Abstract
+--------
+The readme for IBM(R) MQ is now held online.
+
+Please go to the following URL for known limitations and related
+information about this product:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Copyright and trademark information
+-----------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Notices
+-------
+INTERNATIONAL BUSINESS MACHINES CORPORATION PROVIDES THIS PUBLICATION
+"AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+Some jurisdictions do not allow disclaimer of express or implied
+warranties in certain transactions, therefore, this statement may not
+apply to you.
+
+This information could include technical inaccuracies or typographical
+errors. Changes are periodically made to the information herein; these
+changes will be incorporated in new editions of the publication. IBM
+may make improvements and/or changes in the product(s) and/or the
+program(s) described in this publication at any time without notice.
+
+THIRD-PARTY LICENSE TERMS AND CONDITIONS, NOTICES AND INFORMATION
+
+The license agreement for this product refers you to this file for
+details concerning terms and conditions applicable to third party
+software code included in this product, and for certain notices and
+other information IBM must provide to you under its license to certain
+software code. The relevant terms and conditions, notices and other
+information are provided or referenced below. Please note that any
+non-English version of the licenses below is unofficial and is provided
+to you for your convenience only. The English version of the licenses
+below, provided as part of the English version of this file, is the
+official version.
+
+Notwithstanding the terms and conditions of any other agreement you may
+have with IBM or any of its related or affiliated entities
+(collectively "IBM"), the third party software code identified below
+are "Excluded Components" and are subject to the following terms and
+conditions:
+
+* The Excluded Components are provided on an "AS IS" basis
+* IBM DISCLAIMS ANY AND ALL EXPRESS AND IMPLIED WARRANTIES AND
+CONDITIONS WITH RESPECT TO THE EXCLUDED COMPONENTS, INCLUDING, BUT NOT
+LIMITED TO, THE WARRANTY OF NON-INFRINGEMENT OR INTERFERENCE AND THE
+IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE
+* IBM will not be liable to you or indemnify you for any claims related
+to the Excluded Components
+* IBM will not be liable for any direct, indirect, incidental, special,
+exemplary, punitive or consequential damages with respect to the
+Excluded Components.
+
+
+Trademarks
+----------
+The following terms are trademarks of International Business Machines 
+Corporation in the United States, other countries, or both: 
+AIX FFST IBM i IBM MQSeries SupportPac 
+WebSphere z/OS 
+
+Microsoft and Windows are trademarks of Microsoft Corporation 
+in the United States, other countries, or both.
+
+Java and all Java-based trademarks and logos are trademarks or registered 
+trademarks of Oracle and/or its affiliates.
+
+UNIX is a registered trademark of The Open Group in the United States 
+and other countries
+
+Linux is a registered trademark of Linus Torvalds in the United States, 
+other countries, or both.
+
+Other company, product, or service names may be trademarks or service marks of 
+others.

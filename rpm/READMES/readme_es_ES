@@ -1,0 +1,84 @@
+Archivo readme del producto para IBM MQ for Multi-platforms
+
+Resumen
+--------
+El archivo readme para IBM(R) MQ ahora se ofrece en línea.
+
+Diríjase al URL siguiente para obtener información acerca de las limitaciones conocidas e información relacionada sobre este producto:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Información de copyright y marcas registradas
+---------------------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Avisos
+-------
+INTERNATIONAL BUSINESS MACHINES CORPORATION FACILITA ESTA PUBLICACIÓN
+"TAL CUAL" SIN GARANTÍAS DE NINGÚN TIPO, NI EXPLÍCITAS NI IMPLÍCITAS,
+INCLUYENDO, PERO SIN LIMITARSE A ELLAS, LAS GARANTÍAS IMPLÍCITAS DE NO
+INFRACCIÓN, COMERCIABILIDAD O IDONEIDAD PARA UN FIN DETERMINADO.
+Algunas jurisdicciones no permiten la renuncia de las garantías explícitas
+o implícitas en determinadas transacciones, por lo que es posible que
+esta declaración no sea aplicable en su caso.
+
+Esta información puede contener imprecisiones técnicas o errores
+tipográficos. Periódicamente se efectúan cambios en la información aquí contenida; dichos
+cambios se incorporarán en nuevas ediciones de la publicación. IBM se reserva el derecho
+a realizar, si lo considera oportuno, cualquier mejora o modificación en los productos o
+programas que se describen en esta publicación sin previo aviso.
+
+TÉRMINOS Y CONDICIONES DE LICENCIAS DE TERCEROS, AVISOS E INFORMACIÓN
+
+El acuerdo de licencia de este producto le remite a este archivo para obtener información
+sobre los términos y condiciones aplicables al código de software de terceros incluido en
+este producto, y para determinados avisos y otra información que IBM debe proporcionarle
+con su licencia para determinado código de software. Los términos y condiciones, avisos y
+otra información relevantes se proporcionan o mencionan a continuación. Tenga en cuenta
+que cualquier versión en un idioma distinto del inglés de las licencias siguientes no es
+oficial y se proporciona únicamente para su comodidad. La versión en inglés de las
+licencias siguientes, que se proporciona como parte de la versión en inglés de este
+archivo, es la versión oficial.
+
+Aunque se indique de otra forma en los términos y condiciones de cualquier
+otro acuerdo que pueda tener con IBM o con cualquiera de sus organizaciones
+relacionadas o afiliadas (de forma colectiva "IBM"), el código de software
+de terceros identificado a continuación son "Componentes excluidos" y están
+sujetos a los términos y condiciones siguientes:
+
+* Los Componentes excluidos se proporcionan "TAL CUAL"
+* IBM NO OTORGA NINGUNA GARANTÍA NI CONDICIÓN EXPLÍCITA O IMPLÍCITA
+CON RESPECTO A LOS COMPONENTES EXCLUIDOS, INCLUYENDO, PERO SIN
+LIMITARSE A, LA GARANTÍA DE NO INFRACCIÓN O INTERFERENCIA Y LAS GARANTÍAS
+Y CONDICIONES IMPLÍCITAS DE COMERCIABILIDAD E IDONEIDAD PARA UN FIN
+DETERMINADO
+* IBM no será responsable ni le indemnizará por ninguna reclamación relacionada
+con los Componentes excluidos
+* IBM no será responsable de ningún daño directo, indirecto, accidental,
+especial, ejemplar, punitivo o resultante relacionado con los
+Componentes excluidos.
+
+
+Marcas registradas
+------------------
+Los siguientes términos son marcas comerciales de International Business Machines
+Corporation en los Estados Unidos y/o en otros países:
+AIX FFST IBM i IBM MQSeries SupportPac
+WebSphere z/OS 
+
+Microsoft y Windows son marcas registradas de Microsoft Corporation en los Estados Unidos
+y/o en otros países.
+
+Java y todas las marcas comerciales y logotipos basados en Java son marcas comerciales o
+marcas registradas de Oracle y/o sus empresas afiliadas.
+
+UNIX es una marca registrada de "The Open Group" en los Estados Unidos y en otros países.
+
+Linux es una marca registrada de Linus Torvalds en los Estados Unidos
+y/o en otros países.
+
+Otros nombres de empresas, productos o servicios pueden ser marcas comerciales o
+marcas de servicio de terceros.

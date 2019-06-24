@@ -1,0 +1,59 @@
+Leia-me do produto para IBM MQ for Multi-platforms
+
+Resumo
+--------
+O leia-me para IBM(R) MQ agora é mantido online.
+
+Acesse a URL a seguir para limitações conhecidas e informações
+relacionadas sobre esse produto:
+http://www.ibm.com/support/docview.wss?rs=171&uid=swg27006097
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Informações sobre Copyright e Marcas Registradas
+-----------------------------------
+http://www.ibm.com/legal/copytrade.shtml
+
+Avisos
+-------
+A INTERNATIONAL BUSINESS MACHINES CORPORATION FORNECE ESTA PUBLICAÇÃO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE NENHUM TIPO, SEJA EXPRESSA OU IMPLÍCITA, INCLUINDO, MAS A ELAS NÃO SE LIMITANDO, AS GARANTIAS IMPLÍCITAS DE
+NÃO INFRAÇÃO, COMERCIALIZAÇÃO OU ADEQUAÇÃO A UM DETERMINADO PROPÓSITO.
+Alguns países não permitem
+a exclusão de garantias expressas ou implícitas em certas transações;
+portanto, essa disposição pode não se aplicar ao Cliente.
+
+Essas informações podem conter imprecisões técnicas ou erros tipográficos. São feitas alterações periódicas nas informações aqui contidas; tais alterações serão incorporadas em futuras edições desta publicação. A IBM pode, a qualquer momento, aperfeiçoar e/ou alterar os produtos e/ou programas descritos nesta publicação, sem aviso
+prévio.
+
+TERMOS E CONDIÇÕES DE LICENÇA DE TERCEIRO, AVISOS E INFORMAÇÕES
+
+O contrato de licença para este produto o encaminha a este arquivo para obter detalhes referentes aos termos e condições aplicáveis ao código de software de terceiro incluído neste produto e para determinados avisos e outras informações que a IBM deve fornecer em sua licença para determinados códigos de software. Os termos e condições relevantes, os avisos e outras informações são fornecidos ou referenciados a seguir. Observe que qualquer versão das licenças abaixo que não esteja em inglês não é oficial e é fornecida apenas para sua conveniência. A versão em inglês das licenças a seguir, fornecida como parte da versão em inglês deste arquivo, é a versão oficial.
+
+Não obstante os termos e condições de qualquer outro contrato que o cliente possa ter com a IBM ou qualquer de suas entidades relacionadas ou afiliadas (coletivamente "IBM"), o código de software de terceiro identificado abaixo são "Componentes Excluídos" e estão sujeitos aos seguintes termos e condições:
+
+* Os Componentes Excluídos são fornecidos em uma base "NO ESTADO EM QUE SE ENCONTRA"
+* A IBM RENUNCIA QUALQUER E TODAS AS GARANTIAS EXPRESSAS E IMPLÍCITAS E AS CONDIÇÕES COM RELAÇÃO AOS COMPONENTES EXCLUÍDOS, INCLUINDO, MAS NÃO SE LIMITANDO A, A GARANTIA DE NÃO INFRAÇÃO OU INTERFERÊNCIA E AS GARANTIAS E CONDIÇÕES IMPLÍCITAS DE COMERCIALIZAÇÃO E ADEQUAÇÃO A UM DETERMINADO PROPÓSITO
+* A IBM não será responsável por você ou o indenizará por quaisquer reclamações relacionadas aos Componentes Excluídos
+* A IBM não poderá ser responsabilizada por nenhum dano direto, indireto, incidental, especial, exemplar, punitivo ou consequencial com relação aos Componentes Excluídos.
+
+
+Marcas Registradas
+----------
+Os termos a seguir são marcas registradas da International Business Machines
+Corporation nos Estados Unidos e/ou em outros países:
+AIX FFST IBM i IBM MQSeries SupportPac
+WebSphere z/OS
+
+Microsoft e Windows são marcas registradas da Microsoft Corporation nos Estados Unidos e/ou em outros países.
+
+Java e todas as marcas registradas e logotipos baseados em Java são marcas ou marcas registradas da Oracle e/ou suas afiliadas.
+
+UNIX é uma marca registrada do The Open Group nos Estados Unidos e em outros países.
+
+Linux é uma marca registrada de Linus Torvalds nos Estados Unidos e/ou em outros
+países.
+
+Outros nomes de empresas, produtos ou
+serviços podem ser marcas registradas ou marcas de serviço de terceiros.
