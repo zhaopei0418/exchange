@@ -32,9 +32,9 @@ typedef struct {
 } MQMESSAGE;
 MQMESSAGE *gBuffer;
 int bufferCount = 0;
+int loglevel = 0;
 
 void startGetMessage();
-void waitUserPress();
 void initalThread();
 void stopApplication(int signum);
 void messageConsumer(MQHCONN hConn, MQMD *pMsgDesc, MQGMO *pGetMsgOpts, MQBYTE *Buffer, MQCBC *pContext);
@@ -56,8 +56,11 @@ MQLONG o_options;             /* MQOPEN options                */
 MQCHAR channelName[MQ_CHANNEL_NAME_LENGTH];
 MQCHAR queueName[MQ_Q_NAME_LENGTH];
 MQCHAR connectionName[MQ_CONN_NAME_LENGTH];
+MQLONG ccsid = MQENC_NATIVE;
 static char *PROJECT_NAME = "exchange";
 static char *VERSION_NO = "1.0";
+static pthread_mutex_t main_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t main_cond = PTHREAD_COND_INITIALIZER;  /* main condition variable */
 static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t condc = PTHREAD_COND_INITIALIZER;  /* consumer condition variable */
 static pthread_cond_t condp = PTHREAD_COND_INITIALIZER;  /* producer condition variable */
@@ -73,7 +76,10 @@ static void help(const char *restrict cmdName)
     printf("    -c --channelname <Channel Name> Server Connection channel(for use by clients)\n");
     printf("    -m --qmname <Queue Manager Name> Queue Manager Name\n");
     printf("    -q --queue <Queue Name> Queue Name local or remote\n");
+    printf("    -d --ccsid <ccsid> ccsid\n");
     printf("    -b --backup <backup path> backup queue message\n");
+    printf("    -l --loglevel <loglevel> log level, 0:TRACE(default), 1:DEBUG, 2:INFO, 3:WARN, 4:ERROR, 5:FATAL\n");
+    printf("    -h --help show help menu\n");
 }
 
 static int parseOption(int argc, char **argv)
@@ -90,13 +96,15 @@ static int parseOption(int argc, char **argv)
         {"channelname",      required_argument, 0, 'c'},
         {"qmname",           required_argument, 0, 'm'},
         {"queue",            required_argument, 0, 'q'},
+        {"ccsid",            required_argument, 0, 'd'},
         {"backup",           required_argument, 0, 'b'},
+        {"loglevel",         required_argument, 0, 'l'},
         {"help",             no_argument,       0, 'h'}
     };
     while (1) {
         int c;
 
-        c = getopt_long(argc, argv, "x:c:m:q:b:h", long_options, &option_index);
+        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:h", long_options, &option_index);
         if (c == -1)
             break;
 
@@ -117,9 +125,17 @@ static int parseOption(int argc, char **argv)
             strncpy(queueName, optarg, MQ_Q_NAME_LENGTH);
             log_info("QueueName is: %s", queueName);
             break;
+        case 'd':
+            ccsid = atoi(optarg);
+            log_info("ccsid is: %d", ccsid);
+            break;
         case 'b':
             strncpy(backupPath, optarg, MAX_PATH);
             log_info("backupPath is: %s", backupPath);
+            break;
+        case 'l':
+            loglevel = atoi(optarg);
+            log_info("loglevel is: %d", loglevel);
             break;
         default:
             help(cmd);
@@ -171,11 +187,11 @@ void messageConsumer(MQHCONN   hConn,
             break;
 
         case MQCBCT_EVENT_CALL:
-            log_info("Event Call : Reason = %d",pContext->Reason);
+            log_error("Event Call : Reason = %d",pContext->Reason);
             break;
 
         default:
-            log_info("Calltype = %d",pContext->CallType);
+            log_error("Calltype = %d",pContext->CallType);
             break;
 
     }
@@ -251,6 +267,7 @@ void startGetMessage()
     /*                                                              */
     /****************************************************************/
 
+    md.Encoding = ccsid;
     MQCB(hcon,
             MQOP_REGISTER,
             &cbd,
@@ -309,7 +326,7 @@ void *workThread(void *arg)
     }
 }
 
-char* mergePath(char *dstpath, const char *filePrefix, const char *uuid, const char *fileExt)
+char *mergePath(char *dstpath, const char *filePrefix, const char *uuid, const char *fileExt)
 {
     strcat(dstpath, "/");
     strcat(dstpath, filePrefix);
@@ -402,24 +419,6 @@ void initalThread()
     }
 }
 
-void waitUserPress()
-{
-    /******************************************************************/
-    /*                                                                */
-    /*  Wait for the user to press enter                              */
-    /*                                                                */
-    /******************************************************************/
-    {
-        char buffer[10];
-        const char *quit = "quit";
-        log_info("Press quit to end");
-waitInput:
-        fgets(buffer, sizeof(buffer), stdin);
-        if (strcmp(quit, buffer) != 0)
-            goto waitInput;
-    }
-}
-
 int main(int argc, char **argv)
 {
     LOGFILE = fopen(logFileName, "a");
@@ -436,6 +435,7 @@ int main(int argc, char **argv)
         log_info("parse option error.");
         exit(1);
     }
+    log_set_level(loglevel);
 
     nprocs = sysconf(_SC_NPROCESSORS_ONLN);
     if (nprocs == -1) {
@@ -449,7 +449,10 @@ int main(int argc, char **argv)
     gBuffer = (MQMESSAGE *) malloc(sizeof(MQMESSAGE) * BUFFER_SIZE);
     initalThread();
     startGetMessage();
-    waitUserPress();
+    /* while (1); */
+    pthread_mutex_lock(&main_mutex);
+    pthread_cond_wait(&main_cond, &main_mutex);
+    pthread_mutex_unlock(&main_mutex);
 
     stopApplication(SIGINT);
 
