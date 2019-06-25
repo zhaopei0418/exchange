@@ -1,0 +1,27 @@
+{
+    "queueManagers": [
+        {
+            "qmId": 1,
+            "hostName": "172.16.33.54",
+            "port": 1800,
+            "queueManager": "DFWTINTRA",
+            "channel": "JAVA.CHANNEL",
+            "ccsid": 1381
+        }
+    ],
+    "dxpIdDistribution": [
+        {
+            "dxpId": "DXPENT0000011952",
+            "qmId": 1,
+            "queue": "GGFW_TO_DXP"
+        },{
+            "dxpId": "DXPENT0000011951",
+            "qmId": 1,
+            "queue": "ENT_TO_CUS"
+        }
+    ],
+    "defaultTarget": {
+        "qmId": 1,
+        "queue": "CUS_TO_ENT"
+    }
+}

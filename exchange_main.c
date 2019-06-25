@@ -15,6 +15,8 @@
 #include "log/log.h"
 #include "err/error.h"
 #include "base64/base64.h"
+#include "config/config.h"
+#include "redis/redis_tool.h"
 
 /* includes for MQ */
 #include <cmqc.h>
@@ -33,6 +35,7 @@ typedef struct {
 MQMESSAGE *gBuffer;
 int bufferCount = 0;
 int loglevel = 0;
+char configFile[MAX_PATH + 1] = "\0";
 
 void startGetMessage();
 void initalThread();
@@ -79,6 +82,9 @@ static void help(const char *restrict cmdName)
     printf("    -d --ccsid <ccsid> ccsid\n");
     printf("    -b --backup <backup path> backup queue message\n");
     printf("    -l --loglevel <loglevel> log level, 0:TRACE(default), 1:DEBUG, 2:INFO, 3:WARN, 4:ERROR, 5:FATAL\n");
+    printf("    -f --file <config file path> config file path\n");
+    printf("    -H --hostname <redis host name> redis host name default 127.0.0.1\n");
+    printf("    -p --port <redis port> redis port. default 6379\n");
     printf("    -h --help show help menu\n");
 }
 
@@ -99,12 +105,15 @@ static int parseOption(int argc, char **argv)
         {"ccsid",            required_argument, 0, 'd'},
         {"backup",           required_argument, 0, 'b'},
         {"loglevel",         required_argument, 0, 'l'},
+        {"file",             required_argument, 0, 'f'},
+        {"hostname",         required_argument, 0, 'H'},
+        {"port",             required_argument, 0, 'p'},
         {"help",             no_argument,       0, 'h'}
     };
     while (1) {
         int c;
 
-        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:h", long_options, &option_index);
+        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:f:H:p:h", long_options, &option_index);
         if (c == -1)
             break;
 
@@ -137,8 +146,21 @@ static int parseOption(int argc, char **argv)
             loglevel = atoi(optarg);
             log_info("loglevel is: %d", loglevel);
             break;
+        case 'f':
+            strncpy(configFile, optarg, MAX_PATH);
+            log_info("configFile is: %s", configFile);
+            break;
+        case 'H':
+            strncpy(hostname, optarg, HOSTNAME_LENGTH);
+            log_info("redis hostname is: %s", hostname);
+            break;
+        case 'p':
+            port = atoi(optarg);
+            log_info("redis port is: %d", port);
+            break;
         default:
             help(cmd);
+            result = -1;
             break;
         }
     }
@@ -213,6 +235,9 @@ void stopApplication(int signum)
     if (LOGFILE) {
         fclose(LOGFILE);
     }
+
+    disconnectRedis();
+    exit(0);
 }
 
 void startGetMessage()
@@ -432,10 +457,32 @@ int main(int argc, char **argv)
     log_set_fp(LOGFILE);
 
     if (parseOption(argc, argv) < 0) {
-        log_info("parse option error.");
         exit(1);
     }
     log_set_level(loglevel);
+
+    if (strlen(configFile) > 0) {
+        parseConfig(configFile);
+        log_error("config file content: ");
+        log_error("defaultTarget qmId: %d", defaultTarget.qmId);
+        log_error("defaultTarget queue: %s", defaultTarget.queue);
+        log_error("queueManagerSize is: %d", queueManagerSize);
+        for (int i = 0; i < queueManagerSize; i++) {
+            log_error("[%d] queueManager qmId: %d", i, queueManagers[i].qmId);
+            log_error("[%d] queueManager hostName: %s", i, queueManagers[i].hostName);
+            log_error("[%d] queueManager port: %d", i, queueManagers[i].port);
+            log_error("[%d] queueManager queueManager: %s", i, queueManagers[i].queueManager);
+            log_error("[%d] queueManager channel: %s", i, queueManagers[i].channel);
+            log_error("[%d] queueManager ccsid: %d", i, queueManagers[i].ccsid);
+        }
+
+        log_error("dxpIdDistributionSize is: %d", dxpIdDistributionSize);
+        for (int i = 0; i < dxpIdDistributionSize; i++) {
+            log_error("[%d] dxpIdDistribution dxpId: %s", i, dxpIdDistributions[i].dxpId);
+            log_error("[%d] dxpIdDistribution qmId: %d", i, dxpIdDistributions[i].qmId);
+            log_error("[%d] dxpIdDistribution queue: %s", i, dxpIdDistributions[i].queue);
+        }
+    }
 
     nprocs = sysconf(_SC_NPROCESSORS_ONLN);
     if (nprocs == -1) {
@@ -447,6 +494,7 @@ int main(int argc, char **argv)
     signal(SIGQUIT, stopApplication);
 
     gBuffer = (MQMESSAGE *) malloc(sizeof(MQMESSAGE) * BUFFER_SIZE);
+    initConnectionRedis();
     initalThread();
     startGetMessage();
     /* while (1); */
