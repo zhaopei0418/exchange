@@ -13,9 +13,7 @@ MQMESSAGE *gBuffer;
 int bufferCount = 0;
 
 MQCHAR QMgrName[MQ_Q_MGR_NAME_LENGTH];   /* queue manager name            */
-MQCNO   cno = {MQCNO_DEFAULT};                /* connection description        */
 MQCD     cd = {MQCD_CLIENT_CONN_DEFAULT};     /* client connection description */
-MQOD     od = {MQOD_DEFAULT};                 /* object description            */
 MQMD     md = {MQMD_DEFAULT};                 /* message description           */
 MQGMO   gmo = {MQGMO_DEFAULT};                /* get message options           */
 MQCBD   cbd = {MQCBD_DEFAULT};                /* callback description          */
@@ -26,10 +24,13 @@ MQCHAR channelName[MQ_CHANNEL_NAME_LENGTH];
 MQCHAR queueName[MQ_Q_NAME_LENGTH];
 MQCHAR connectionName[MQ_CONN_NAME_LENGTH];
 MQLONG ccsid = MQENC_NATIVE;
+MQHCONN *phcon;
 
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condc = PTHREAD_COND_INITIALIZER;  /* consumer condition variable */
 pthread_cond_t condp = PTHREAD_COND_INITIALIZER;  /* producer condition variable */
+
+int getMessageThreadCount = 1;
 
 void freeBuffer()
 {
@@ -37,17 +38,30 @@ void freeBuffer()
         free(gBuffer);
 }
 
+void freeHcon()
+{
+    if (phcon != NULL) {
+        MQLONG compCode;
+        MQLONG reasCode;
+        for (int i = 0; i < getMessageThreadCount; i++) {
+            MQDISC(phcon + i, &compCode, &reasCode);
+            if (compCode == MQCC_FAILED) {
+                log_error("MQDISC failed.");
+            } else {
+                log_info("MQDISC successful.");
+            }
+        }
+        free(phcon);
+    }
+}
+
 void startGetMessage()
 {
     gBuffer = (MQMESSAGE *) malloc(sizeof(MQMESSAGE) * BUFFER_SIZE);
     strncpy(cd.ConnectionName, connectionName, MQ_CONN_NAME_LENGTH);
     strncpy(cd.ChannelName, channelName, MQ_CHANNEL_NAME_LENGTH);
-    strncpy(od.ObjectName, queueName, MQ_Q_NAME_LENGTH);
 
     cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
-    cno.Options |= MQCNO_RECONNECT;  /* reconnect */
-    cno.ClientConnPtr = &cd;
-    cno.Version = MQCNO_VERSION_2;   /* client connection set version 2 */
 
     cbd.CallbackFunction = messageConsumer;
     gmo.Options = MQGMO_NO_SYNCPOINT;
@@ -55,68 +69,86 @@ void startGetMessage()
     o_options = MQOO_INPUT_AS_Q_DEF      /* open queue for input      */
               | MQOO_FAIL_IF_QUIESCING;  /* but not if MQM stopping   */
 
-    MQHCONN hcon = MQHC_UNUSABLE_HCONN;
-    MQHOBJ hobj;
-    MQLONG compCode;
-    MQLONG reasCode;
-
-    MQCONNX(QMgrName,              /* queue manager          */
-            &cno,                  /* connection options     */
-            &hcon,                 /* connection handle      */
-            &compCode,             /* completion code        */
-            &reasCode);            /* reason code            */
-
-    if (compCode == MQCC_FAILED) {
-        log_error("MQCONNX ended with reason code %d", reasCode);
-        exit(reasCode);
+    log_info("getMessageThreadCount is: %d", getMessageThreadCount);
+    phcon = (MQHCONN *) malloc(sizeof(MQHCONN *) * getMessageThreadCount);
+    if (phcon == NULL) {
+        log_error("malloc error.");
+        exit(1);
     }
+    for (int i = 0; i < getMessageThreadCount; i++) {
+        MQCNO   cno = {MQCNO_DEFAULT};                /* connection description        */
+        cno.Options |= MQCNO_RECONNECT;  /* reconnect */
+        cno.Options |= MQCNO_HANDLE_SHARE_BLOCK;
+        cno.ClientConnPtr = &cd;
+        cno.Version = MQCNO_VERSION_2;   /* client connection set version 2 */
 
-    MQOPEN(hcon,                    /* connection handle            */
-           &od,                     /* object descriptor for queue  */
-           o_options,               /* open options                 */
-           &hobj,                   /* object handle                */
-           &compCode,               /* completion code              */
-           &reasCode);              /* reason code                  */
+        MQOD     od = {MQOD_DEFAULT};                 /* object description            */
+        strncpy(od.ObjectName, queueName, MQ_Q_NAME_LENGTH);
 
-    if (compCode == MQCC_FAILED) {
-        log_error("MQOPEN of '%.48s' ended with reason code %d",
-                &od.ObjectName, reasCode);
-        exit(reasCode);
-    }
+        MQHCONN *hcon = phcon + i;
+        log_info("hcon %p", hcon);
+        MQHOBJ hobj;
+        MQLONG compCode;
+        MQLONG reasCode;
 
-    /****************************************************************/
-    /*                                                              */
-    /*   Register a consumer                                        */
-    /*                                                              */
-    /****************************************************************/
+        MQCONNX(QMgrName,              /* queue manager          */
+                &cno,                  /* connection options     */
+                hcon,                  /* connection handle      */
+                &compCode,             /* completion code        */
+                &reasCode);            /* reason code            */
 
-    md.Encoding = ccsid;
-    MQCB(hcon,
-            MQOP_REGISTER,
-            &cbd,
-            hobj,
-            &md,
-            &gmo,
-            &compCode,
-            &reasCode);
-    if (compCode == MQCC_FAILED) {
-        log_error("MQCB ended with reason code %d", reasCode);
-        exit(reasCode);
-    }
+        if (compCode == MQCC_FAILED) {
+            log_error("MQCONNX ended with reason code %d", reasCode);
+            exit(reasCode);
+        }
 
-    /******************************************************************/
-    /*                                                                */
-    /*  Start consumption of messages                                 */
-    /*                                                                */
-    /******************************************************************/
-    MQCTL(hcon,
-            MQOP_START,
-            &ctlo,
-            &compCode,
-            &reasCode);
-    if (compCode == MQCC_FAILED) {
-        log_error("MQCTL ended with reason code %d", reasCode);
-        exit(reasCode);
+        MQOPEN(*hcon,                    /* connection handle            */
+                &od,                     /* object descriptor for queue  */
+                o_options,               /* open options                 */
+                &hobj,                   /* object handle                */
+                &compCode,               /* completion code              */
+                &reasCode);              /* reason code                  */
+
+        if (compCode == MQCC_FAILED) {
+            log_error("MQOPEN of '%.48s' ended with reason code %d",
+                    &od.ObjectName, reasCode);
+            exit(reasCode);
+        }
+
+        /****************************************************************/
+        /*                                                              */
+        /*   Register a consumer                                        */
+        /*                                                              */
+        /****************************************************************/
+
+        md.Encoding = ccsid;
+        MQCB(*hcon,
+                MQOP_REGISTER,
+                &cbd,
+                hobj,
+                &md,
+                &gmo,
+                &compCode,
+                &reasCode);
+        if (compCode == MQCC_FAILED) {
+            log_error("MQCB ended with reason code %d", reasCode);
+            exit(reasCode);
+        }
+
+        /******************************************************************/
+        /*                                                                */
+        /*  Start consumption of messages                                 */
+        /*                                                                */
+        /******************************************************************/
+        MQCTL(*hcon,
+                MQOP_START,
+                &ctlo,
+                &compCode,
+                &reasCode);
+        if (compCode == MQCC_FAILED) {
+            log_error("MQCTL ended with reason code %d", reasCode);
+            exit(reasCode);
+        }
     }
 }
 
@@ -161,11 +193,11 @@ static void messageConsumer(MQHCONN   hConn,
             break;
 
         case MQCBCT_EVENT_CALL:
-            log_error("Event Call : Reason = %d",pContext->Reason);
+            log_error("tid: %u Event Call : Reason = %d", (unsigned int) tid, pContext->Reason);
             break;
 
         default:
-            log_error("Calltype = %d",pContext->CallType);
+            log_error("tid: %u Calltype = %d", (unsigned int) tid, pContext->CallType);
             break;
 
     }

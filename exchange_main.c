@@ -34,7 +34,7 @@ void stopApplication(int signum);
 void writeMessageToFile(MQMESSAGE *message);
 
 pthread_t *threads;
-long nprocs = -1;
+int workThreadCount = 0;
 
 static char *PROJECT_NAME = "exchange";
 static char *VERSION_NO = "1.0";
@@ -58,6 +58,8 @@ static void help(const char *restrict cmdName)
     printf("    -f --file <config file path> config file path\n");
     printf("    -H --hostname <redis host name> redis host name default 127.0.0.1\n");
     printf("    -p --port <redis port> redis port. default 6379\n");
+    printf("    -t --gtcount <thread count> get message thread count, default 1\n");
+    printf("    -T --htcount <thread count> handle message thread count, default cpu count\n");
     printf("    -h --help show help menu\n");
 }
 
@@ -81,12 +83,14 @@ static int parseOption(int argc, char **argv)
         {"file",             required_argument, 0, 'f'},
         {"hostname",         required_argument, 0, 'H'},
         {"port",             required_argument, 0, 'p'},
+        {"gtcount",          required_argument, 0, 't'},
+        {"htcount",          required_argument, 0, 'T'},
         {"help",             no_argument,       0, 'h'}
     };
     while (1) {
         int c;
 
-        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:f:H:p:h", long_options, &option_index);
+        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:f:H:p:t:T:h", long_options, &option_index);
         if (c == -1)
             break;
 
@@ -131,6 +135,14 @@ static int parseOption(int argc, char **argv)
             port = atoi(optarg);
             log_info("redis port is: %d", port);
             break;
+        case 't':
+            getMessageThreadCount = atoi(optarg);
+            log_info("getMessageThreadCount is: %d", getMessageThreadCount);
+            break;
+        case 'T':
+            workThreadCount = atoi(optarg);
+            log_info("workThreadCount is: %d", workThreadCount);
+            break;
         default:
             help(cmd);
             result = -1;
@@ -143,16 +155,17 @@ static int parseOption(int argc, char **argv)
 
 void stopApplication(int signum)
 {
+    log_debug("handle SIGINT signal");
     int rtnVal = 1;
     if (threads != NULL) {
-        for (int i = 0; i < nprocs; i++)
+        for (int i = 0; i < workThreadCount; i++)
             pthread_cancel(threads[i]);
         free(threads);
     }
 
     freeBuffer();
+    freeHcon();
 
-    log_debug("handle SIGINT signal");
     if (LOGFILE) {
         fclose(LOGFILE);
     }
@@ -255,9 +268,9 @@ void writeMessageToFile(MQMESSAGE *message)
 
 void initalThread()
 {
-    log_info("nprocs is %d", nprocs);
-    threads = (pthread_t *) malloc(sizeof(pthread_t) * nprocs);
-    for (int i = 0; i < nprocs; i++) {
+    log_info("workThreadCount is %d", workThreadCount);
+    threads = (pthread_t *) malloc(sizeof(pthread_t) * workThreadCount);
+    for (int i = 0; i < workThreadCount; i++) {
         pthread_create(threads + i, NULL, workThread, NULL);
     }
 }
@@ -302,10 +315,13 @@ int main(int argc, char **argv)
         }
     }
 
-    nprocs = sysconf(_SC_NPROCESSORS_ONLN);
-    if (nprocs == -1) {
-        log_info("get processors error.");
-        exit(1);
+    if (workThreadCount == 0) {
+        long nprocs = sysconf(_SC_NPROCESSORS_ONLN);
+        if (nprocs == -1) {
+            log_info("get processors error.");
+            exit(1);
+        }
+        workThreadCount = (int) nprocs;
     }
 
     signal(SIGINT, stopApplication);

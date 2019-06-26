@@ -24,6 +24,9 @@ extern pthread_mutex_t mtx;
 extern pthread_cond_t condc;
 extern pthread_cond_t condp;
 
+extern int getMessageThreadCount;
+
 void freeBuffer();
+void freeHcon();
 void startGetMessage();
 #endif
