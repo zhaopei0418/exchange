@@ -1,5 +1,6 @@
 TARGET = exchange
-OBJECTS = exchange_main.o log.o error.o base64.o config.o redis_tool.o mq.o tool.o
+OBJECTS = exchange_main.o log.o error.o base64.o config.o redis_tool.o mq.o tool.o \
+		  queue.o
 MQ_INSTALL_PATH = /opt/mqm
 #CC_FLAGS = -std=c11 -m64 -I $(MQ_INSTALL_PATH)/inc -L $(MQ_INSTALL_PATH)/lib64 -Wl,-rpath=$(MQ_INSTALL_PATH)/lib64 -Wl,-rpath=/usr/lib64
 CC_FLAGS = -std=c11 -m64 -I $(MQ_INSTALL_PATH)/inc -L $(MQ_INSTALL_PATH)/lib64 \
@@ -27,6 +28,9 @@ mq.o: mq.c mq.h
 	cc $(CC_FLAGS) -c $< $
 
 tool.o: tool/tool.c tool/tool.h
+	cc $(CC_FLAGS) -c $< $
+
+queue.o: queue/queue.c queue/queue.h
 	cc $(CC_FLAGS) -c $< $
 
 exchange_main.o: exchange_main.c log/log.h err/error.h mq.h

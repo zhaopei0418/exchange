@@ -30,15 +30,24 @@ pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condc = PTHREAD_COND_INITIALIZER;  /* consumer condition variable */
 pthread_cond_t condp = PTHREAD_COND_INITIALIZER;  /* producer condition variable */
 
+QueuePtr hconnQueue = NULL;
+
 int getMessageThreadCount = 1;
 
-void freeBuffer()
+void clean()
+{
+    freeBuffer();
+    freeHcon();
+    DestroyQueue(hconnQueue);
+}
+
+static void freeBuffer()
 {
     if (gBuffer != NULL)
         free(gBuffer);
 }
 
-void freeHcon()
+static void freeHcon()
 {
     if (phcon != NULL) {
         MQLONG compCode;
@@ -60,6 +69,12 @@ void startGetMessage()
     gBuffer = (MQMESSAGE *) malloc(sizeof(MQMESSAGE) * BUFFER_SIZE);
     strncpy(cd.ConnectionName, connectionName, MQ_CONN_NAME_LENGTH);
     strncpy(cd.ChannelName, channelName, MQ_CHANNEL_NAME_LENGTH);
+
+    hconnQueue = InitQueue();
+    if (hconnQueue == NULL) {
+        log_error("init queue error.");
+        exit(1);
+    }
 
     cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
 
@@ -87,6 +102,8 @@ void startGetMessage()
 
         MQHCONN *hcon = phcon + i;
         log_info("hcon %p", hcon);
+        enHconnQueue(*hcon, 0);
+
         MQHOBJ hobj;
         MQLONG compCode;
         MQLONG reasCode;
@@ -201,4 +218,23 @@ static void messageConsumer(MQHCONN   hConn,
             break;
 
     }
+}
+
+static void enHconnQueue(MQHCONN hConn, int qmId)
+{
+    MQHCONN_DATA_PTR hconnPtr = malloc(sizeof(MQHCONN_DATA));
+    if (hconnPtr == NULL) {
+        log_error("malloc hconnptr error.");
+        exit(1);
+    }
+    hconnPtr->qmId = 0;
+    hconnPtr->hConn = hConn;
+    ElementPtr elementPtr = malloc(sizeof(Element));
+    if (elementPtr == NULL) {
+        log_error("malloc elementPtr error.");
+        exit(1);
+    }
+    elementPtr->data = (data_t)hconnPtr;
+    elementPtr->next = NULL;
+    EnQueue(hconnQueue, elementPtr);
 }

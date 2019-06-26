@@ -44,7 +44,7 @@ int lpush(const char *list, const char *value)
 {
     redisReply *reply;
     reply = redisCommand(rc, "LPUSH %s %s", list, value);
-    log_info("LPUSH: %s", reply->integer);
+    log_info("LPUSH: %lld", reply->integer);
     return 0;
 }
 

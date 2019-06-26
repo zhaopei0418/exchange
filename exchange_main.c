@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <pthread.h>
+#include <stdint.h>
 #include <uuid/uuid.h>
 #include <cJSON.h>
 #include "log/log.h"
@@ -19,6 +20,7 @@
 #include "redis/redis_tool.h"
 #include "mq.h"
 #include "tool/tool.h"
+#include "queue/queue.h"
 
 #define MAX_PATH 200
 
@@ -163,8 +165,7 @@ void stopApplication(int signum)
         free(threads);
     }
 
-    freeBuffer();
-    freeHcon();
+    clean();
 
     if (LOGFILE) {
         fclose(LOGFILE);
@@ -275,6 +276,11 @@ void initalThread()
     }
 }
 
+/* void testFunction() */
+/* { */
+/*     log_info("test function...."); */
+/* } */
+
 int main(int argc, char **argv)
 {
     LOGFILE = fopen(logFileName, "a");
@@ -328,6 +334,17 @@ int main(int argc, char **argv)
     signal(SIGQUIT, stopApplication);
 
     /* initConnectionRedis(); */
+    /* char testFuncPtr[20]; */
+    /* sprintf(testFuncPtr, "%lld", testFunction); */
+    /* log_info("testFuncPtr is: %s", testFuncPtr); */
+    /* lpush("pfunc", testFuncPtr); */
+    /* char dstTestFuncPtr[20]; */
+    /* blpop("pfunc", dstTestFuncPtr); */
+    /* log_info("dstTestFuncPtr is: %s", dstTestFuncPtr); */
+    /* uintptr_t testFuncP = atoll(dstTestFuncPtr); */
+    /* log_info("testFuncP is: %x, %lld", testFuncP, testFuncP); */
+    /* ((void (*) ()) testFuncP)(); */
+
     initalThread();
     startGetMessage();
     pthread_mutex_lock(&main_mutex);

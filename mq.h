@@ -4,6 +4,7 @@
 /* includes for MQ */
 #include <cmqc.h>
 #include <cmqxc.h>
+#include "queue/queue.h"
 
 #define BUFFER_SIZE 20000
 
@@ -11,6 +12,12 @@ typedef struct {
     MQBYTE *data;
     size_t size;
 } MQMESSAGE;
+
+typedef struct {
+    int qmId;
+    MQHCONN hConn;
+} MQHCONN_DATA, *MQHCONN_DATA_PTR;
+
 extern MQMESSAGE *gBuffer;
 extern int bufferCount;
 
@@ -25,8 +32,11 @@ extern pthread_cond_t condc;
 extern pthread_cond_t condp;
 
 extern int getMessageThreadCount;
+extern int workThreadCount;
 
-void freeBuffer();
-void freeHcon();
+static void freeBuffer();
+static void freeHcon();
+static void enHconnQueue(MQHCONN hConn, int qmId);
 void startGetMessage();
+void clean();
 #endif

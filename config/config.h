@@ -5,7 +5,7 @@
 
 #define DXP_ID_LENGTH 31
 #define MAX_QUEUEMANAGER_LENGTH 20
-#define MAX_DXP_DISTRIBUTION_LENGTH 100
+#define MAX_DXP_DISTRIBUTION_LENGTH 50
 
 struct DefaultTarget {
     int qmId;
