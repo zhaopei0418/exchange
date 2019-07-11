@@ -139,3 +139,16 @@ void parseConfig(const char *configPath)
 end:
     cJSON_Delete(configJson);
 }
+
+int getQueueByDxpId(const char *dxpId, char *queue)
+{
+    if (dxpId == NULL || queue == NULL)
+        return -1;
+    for (int i = 0; i < dxpIdDistributionSize; i++) {
+        if (strncmp(dxpId, dxpIdDistributions[i].dxpId, DXP_ID_LENGTH) == 0) {
+            strncpy(queue, dxpIdDistributions[i].queue, MQ_Q_NAME_LENGTH);
+            return 0;
+        }
+    }
+    return -1;
+}

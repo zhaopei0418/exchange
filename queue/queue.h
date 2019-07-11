@@ -18,8 +18,8 @@ typedef struct {
 } Queue, *QueuePtr;
 
 QueuePtr InitQueue();
-void DestroyQueue(QueuePtr queuePtr);
-void ClearQueue(QueuePtr queuePtr);
+void DestroyQueue(QueuePtr queuePtr, void (*dataHandle)(void *));
+void ClearQueue(QueuePtr queuePtr, void (*dataHandle)(void *));
 int Empty(QueuePtr queuePtr);
 int Size(QueuePtr queuePtr);
 ElementPtr Head(QueuePtr queuePtr);

@@ -17,10 +17,11 @@
 #include "err/error.h"
 #include "base64/base64.h"
 #include "config/config.h"
+#ifdef USE_REDIS
 #include "redis/redis_tool.h"
+#endif
 #include "mq.h"
 #include "tool/tool.h"
-#include "queue/queue.h"
 
 #define MAX_PATH 200
 
@@ -31,15 +32,19 @@ static int parseOption(int argc, char **argv);
 int loglevel = 0;
 char configFile[MAX_PATH + 1] = "\0";
 
-void initalThread();
-void stopApplication(int signum);
-void writeMessageToFile(MQMESSAGE *message);
-
 pthread_t *threads;
 int workThreadCount = 0;
+int decode = 0;
+
+void initalThread();
+void stopApplication(int signum);
+void writeMessageToFile(const MQMESSAGE *message);
+void sendMessage(const MQMESSAGE *message);
+void exitFunction();
+
 
 static char *PROJECT_NAME = "exchange";
-static char *VERSION_NO = "1.0";
+static char *VERSION_NO = "1.1";
 static pthread_mutex_t main_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t main_cond = PTHREAD_COND_INITIALIZER;  /* main condition variable */
 static FILE *LOGFILE;
@@ -58,10 +63,13 @@ static void help(const char *restrict cmdName)
     printf("    -b --backup <backup path> backup queue message\n");
     printf("    -l --loglevel <loglevel> log level, 0:TRACE(default), 1:DEBUG, 2:INFO, 3:WARN, 4:ERROR, 5:FATAL\n");
     printf("    -f --file <config file path> config file path\n");
+#ifdef USE_REDIS
     printf("    -H --hostname <redis host name> redis host name default 127.0.0.1\n");
     printf("    -p --port <redis port> redis port. default 6379\n");
+#endif
     printf("    -t --gtcount <thread count> get message thread count, default 1\n");
     printf("    -T --htcount <thread count> handle message thread count, default cpu count\n");
+    printf("    -D --decode  <decode data> whether to decode data, 0: not, 1: yes, default: 0\n");
     printf("    -h --help show help menu\n");
 }
 
@@ -83,16 +91,23 @@ static int parseOption(int argc, char **argv)
         {"backup",           required_argument, 0, 'b'},
         {"loglevel",         required_argument, 0, 'l'},
         {"file",             required_argument, 0, 'f'},
+#ifdef USE_REDIS
         {"hostname",         required_argument, 0, 'H'},
         {"port",             required_argument, 0, 'p'},
+#endif
         {"gtcount",          required_argument, 0, 't'},
         {"htcount",          required_argument, 0, 'T'},
+        {"decode",           required_argument, 0, 'D'},
         {"help",             no_argument,       0, 'h'}
     };
     while (1) {
         int c;
 
-        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:f:H:p:t:T:h", long_options, &option_index);
+#ifdef USE_REDIS
+        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:f:H:p:t:T:D:h", long_options, &option_index);
+#else
+        c = getopt_long(argc, argv, "x:c:m:q:d:b:l:f:t:T:D:h", long_options, &option_index);
+#endif
         if (c == -1)
             break;
 
@@ -124,11 +139,16 @@ static int parseOption(int argc, char **argv)
         case 'l':
             loglevel = atoi(optarg);
             log_info("loglevel is: %d", loglevel);
+            if (loglevel < 0 && loglevel > 5) {
+                log_error("loglevel illegal, only 0 to 5.");
+                result = -1;
+            }
             break;
         case 'f':
             strncpy(configFile, optarg, MAX_PATH);
             log_info("configFile is: %s", configFile);
             break;
+#ifdef USE_REDIS
         case 'H':
             strncpy(hostname, optarg, HOSTNAME_LENGTH);
             log_info("redis hostname is: %s", hostname);
@@ -137,6 +157,7 @@ static int parseOption(int argc, char **argv)
             port = atoi(optarg);
             log_info("redis port is: %d", port);
             break;
+#endif
         case 't':
             getMessageThreadCount = atoi(optarg);
             log_info("getMessageThreadCount is: %d", getMessageThreadCount);
@@ -144,6 +165,14 @@ static int parseOption(int argc, char **argv)
         case 'T':
             workThreadCount = atoi(optarg);
             log_info("workThreadCount is: %d", workThreadCount);
+            break;
+        case 'D':
+            decode = atoi(optarg);
+            log_info("decode is: %d", decode);
+            if (decode != 0 && decode != 1) {
+                log_error("decode illegal, only 0 and 1.");
+                result = -1;
+            }
             break;
         default:
             help(cmd);
@@ -153,6 +182,11 @@ static int parseOption(int argc, char **argv)
     }
 
     return result;
+}
+
+void exitFunction()
+{
+    stopApplication(0);
 }
 
 void stopApplication(int signum)
@@ -171,8 +205,10 @@ void stopApplication(int signum)
         fclose(LOGFILE);
     }
 
+#ifdef USE_REDIS
     disconnectRedis();
-    exit(0);
+#endif
+    _exit(0);
 }
 
 void *workThread(void *arg)
@@ -184,27 +220,61 @@ void *workThread(void *arg)
         while (bufferCount <= 0)
             pthread_cond_wait(&condc, &mtx);
 
-        message = gBuffer[--bufferCount];
+        message.data = gBuffer[--bufferCount].data;
+        message.size = gBuffer[bufferCount].size;
+        gBuffer[bufferCount].data = NULL;
+        gBuffer[bufferCount].size = 0;
 
         if (bufferCount <= 0)
             pthread_cond_signal(&condp);
 
         pthread_mutex_unlock(&mtx);
-        log_info("workThread: %u, message (%u Bytes) :", (unsigned int)tid, message.size);
+        log_info("thread: %u, message (%u Bytes) :", (unsigned int)tid, message.size);
 
         if (message.data != NULL) {
             log_info("thread: %u, message is: [%s]", (unsigned int)tid, message.data);
+            if (strlen(configFile) > 0)
+                sendMessage(&message);
+
             if (strlen(backupPath) > 0)
                 writeMessageToFile(&message);
             free(message.data);
         } else {
             log_info("thread: %u, no data.", (unsigned int)tid);
         }
+
+        message.data = NULL;
         message.size = 0;
     }
 }
 
-void writeMessageToFile(MQMESSAGE *message)
+void sendMessage(const MQMESSAGE *message)
+{
+    char *dataStart = "<ReceiverId>";
+    char *dataEnd = "</ReceiverId>";
+
+    char *dataStartPos = strstr(message->data, dataStart);
+    char *dataEndPos = strstr(message->data, dataEnd);
+    char queue[MQ_Q_NAME_LENGTH];
+
+    if (dataStartPos && dataEndPos && dataEndPos > dataStartPos) {
+        *dataEndPos = '\0';
+        char *startPos = dataStartPos + strlen(dataStart);
+        log_info("dxpId is %s", startPos);
+        if (getQueueByDxpId(startPos, queue) == -1) {
+            log_error("dxpId: %s no corresponding queue was found, use default queue %s", startPos, defaultTarget.queue);
+            strncpy(queue, defaultTarget.queue, MQ_Q_NAME_LENGTH);
+        }
+        *dataEndPos = '<';
+    }
+    log_info("send to queue %s", queue);
+    while (hconnQueue == NULL) {
+
+    }
+    sendMessageToQueue(message, queue);
+}
+
+void writeMessageToFile(const MQMESSAGE *message)
 {
     uuid_t uuid;
     char uuidStr[36];
@@ -235,28 +305,31 @@ void writeMessageToFile(MQMESSAGE *message)
         return;
     }
 
-    char *dataStart = "<Data>";
-    char *dataEnd = "</Data>";
+    if (decode) {
+        char *dataStart = "<Data>";
+        char *dataEnd = "</Data>";
 
-    char *dataStartPos = strstr(message->data, "<Data>");
-    char *dataEndPos = strstr(message->data, "</Data>");
+        char *dataStartPos = strstr(message->data, dataStart);
+        char *dataEndPos = strstr(message->data, dataEnd);
 
-    if (dataStartPos && dataEndPos && dataEndPos > dataStartPos) {
-        *dataEndPos = '\0';
-        setlocale(LC_ALL, "en_US.utf8");
-        size_t dataLength = (dataEndPos - dataStartPos) * 3 / 4;
-        char *startPos = dataStartPos + strlen(dataStart);
-        log_info("data is %s", startPos);
-        char *odata = (char *)malloc(sizeof(char) * dataLength);
-        size_t bytes = base64_decode(startPos, odata);
-        odata[bytes] = '\0';
-        log_info("bytes is %u", bytes);
-        log_info("odata is %s", odata);
-        fprintf(tmpfp, "%s", odata);
-        free(odata);
+        if (dataStartPos && dataEndPos && dataEndPos > dataStartPos) {
+            *dataEndPos = '\0';
+            setlocale(LC_ALL, "en_US.utf8");
+            size_t dataLength = (dataEndPos - dataStartPos) * 3 / 4;
+            char *startPos = dataStartPos + strlen(dataStart);
+            log_info("data is %s", startPos);
+            char *odata = (char *)malloc(sizeof(char) * dataLength);
+            size_t bytes = base64_decode(startPos, odata);
+            odata[bytes] = '\0';
+            log_info("bytes is %u", bytes);
+            log_info("odata is %s", odata);
+            fprintf(tmpfp, "%s", odata);
+            free(odata);
+        } else {
+            fprintf(tmpfp, "%s", message->data);
+        }
     } else {
-        for (int i = 0; i < message->size; i++)
-            fputc(message->data[i], tmpfp);
+        fprintf(tmpfp, "%s", message->data);
     }
 
     fclose(tmpfp);
@@ -276,13 +349,9 @@ void initalThread()
     }
 }
 
-/* void testFunction() */
-/* { */
-/*     log_info("test function...."); */
-/* } */
-
 int main(int argc, char **argv)
 {
+    atexit(exitFunction);
     LOGFILE = fopen(logFileName, "a");
     if (!LOGFILE) {
             LOGFILE = fopen(logFileName, "w");
@@ -300,24 +369,24 @@ int main(int argc, char **argv)
 
     if (strlen(configFile) > 0) {
         parseConfig(configFile);
-        log_error("config file content: ");
-        log_error("defaultTarget qmId: %d", defaultTarget.qmId);
-        log_error("defaultTarget queue: %s", defaultTarget.queue);
-        log_error("queueManagerSize is: %d", queueManagerSize);
+        log_info("config file content: ");
+        log_info("defaultTarget qmId: %d", defaultTarget.qmId);
+        log_info("defaultTarget queue: %s", defaultTarget.queue);
+        log_info("queueManagerSize is: %d", queueManagerSize);
         for (int i = 0; i < queueManagerSize; i++) {
-            log_error("[%d] queueManager qmId: %d", i, queueManagers[i].qmId);
-            log_error("[%d] queueManager hostName: %s", i, queueManagers[i].hostName);
-            log_error("[%d] queueManager port: %d", i, queueManagers[i].port);
-            log_error("[%d] queueManager queueManager: %s", i, queueManagers[i].queueManager);
-            log_error("[%d] queueManager channel: %s", i, queueManagers[i].channel);
-            log_error("[%d] queueManager ccsid: %d", i, queueManagers[i].ccsid);
+            log_info("[%d] queueManager qmId: %d", i, queueManagers[i].qmId);
+            log_info("[%d] queueManager hostName: %s", i, queueManagers[i].hostName);
+            log_info("[%d] queueManager port: %d", i, queueManagers[i].port);
+            log_info("[%d] queueManager queueManager: %s", i, queueManagers[i].queueManager);
+            log_info("[%d] queueManager channel: %s", i, queueManagers[i].channel);
+            log_info("[%d] queueManager ccsid: %d", i, queueManagers[i].ccsid);
         }
 
-        log_error("dxpIdDistributionSize is: %d", dxpIdDistributionSize);
+        log_info("dxpIdDistributionSize is: %d", dxpIdDistributionSize);
         for (int i = 0; i < dxpIdDistributionSize; i++) {
-            log_error("[%d] dxpIdDistribution dxpId: %s", i, dxpIdDistributions[i].dxpId);
-            log_error("[%d] dxpIdDistribution qmId: %d", i, dxpIdDistributions[i].qmId);
-            log_error("[%d] dxpIdDistribution queue: %s", i, dxpIdDistributions[i].queue);
+            log_info("[%d] dxpIdDistribution dxpId: %s", i, dxpIdDistributions[i].dxpId);
+            log_info("[%d] dxpIdDistribution qmId: %d", i, dxpIdDistributions[i].qmId);
+            log_info("[%d] dxpIdDistribution queue: %s", i, dxpIdDistributions[i].queue);
         }
     }
 

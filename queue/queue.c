@@ -21,21 +21,28 @@ QueuePtr InitQueue()
     return queuePtr;
 }
 
-void DestroyQueue(QueuePtr queuePtr)
+void DestroyQueue(QueuePtr queuePtr, void (*dataHandle)(void *))
 {
     if (queuePtr == NULL)
         return;
-    ClearQueue(queuePtr);
+    ClearQueue(queuePtr, dataHandle);
     pthread_mutex_destroy(&queuePtr->qmutex);
     pthread_cond_destroy(&queuePtr->qcond);
     free(queuePtr);
     queuePtr = NULL;
 }
 
-void ClearQueue(QueuePtr queuePtr)
+void ClearQueue(QueuePtr queuePtr, void (*dataHandle)(void *))
 {
-    while (!Empty(queuePtr))
-        DeQueue(queuePtr);
+    ElementPtr elementPtr = NULL;
+    while ((elementPtr = DeQueue(queuePtr)) != NULL) {
+        if (elementPtr->data != NULL) {
+            if (dataHandle != NULL) {
+                dataHandle(elementPtr->data);
+            }
+        }
+        free(elementPtr);
+    }
 }
 
 int Empty(QueuePtr queuePtr)

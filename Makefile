@@ -1,11 +1,18 @@
-TARGET = exchange
-OBJECTS = exchange_main.o log.o error.o base64.o config.o redis_tool.o mq.o tool.o \
-		  queue.o
-MQ_INSTALL_PATH = /opt/mqm
-#CC_FLAGS = -std=c11 -m64 -I $(MQ_INSTALL_PATH)/inc -L $(MQ_INSTALL_PATH)/lib64 -Wl,-rpath=$(MQ_INSTALL_PATH)/lib64 -Wl,-rpath=/usr/lib64
-CC_FLAGS = -std=c11 -O3 -m64 -I $(MQ_INSTALL_PATH)/inc -I include
+# USE_REDIS = -DUSE_REDIS
+ifdef USE_REDIS
+	LREDIS = -lhiredis
+	OREDIS = redis_tool.o
+endif
 
-CC_LINK_FLAGS = -L $(MQ_INSTALL_PATH)/lib64 -L lib -lmqic_r -lpthread -luuid -lcjson -lhiredis
+TARGET = exchange
+OBJECTS = exchange_main.o log.o error.o base64.o config.o mq.o tool.o queue.o $(OREDIS)
+MQ_INSTALL_PATH = /opt/mqm
+# CC_FLAGS = -std=c11 -m64 -I $(MQ_INSTALL_PATH)/inc -L $(MQ_INSTALL_PATH)/lib64 -Wl,-rpath=$(MQ_INSTALL_PATH)/lib64 -Wl,-rpath=/usr/lib64
+
+
+DEFS += $(USE_REDIS)
+CC_FLAGS += $(DEFS) -std=c11 -O3 -m64 -I $(MQ_INSTALL_PATH)/inc -I include
+CC_LINK_FLAGS = -L $(MQ_INSTALL_PATH)/lib64 -L lib -lmqic_r -lpthread -luuid -lcjson $(LREDIS)
 
 $(TARGET): $(OBJECTS)
 	cc $(CC_FLAGS) $(CC_LINK_FLAGS) -o $@ $^

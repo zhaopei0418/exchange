@@ -34,5 +34,6 @@ extern int queueManagerSize;
 extern int dxpIdDistributionSize;
 
 void parseConfig(const char *configPath);
+int getQueueByDxpId(const char *dxpId, char *queue);
 
 #endif

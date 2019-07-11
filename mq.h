@@ -5,6 +5,7 @@
 #include <cmqc.h>
 #include <cmqxc.h>
 #include "queue/queue.h"
+#include "config/config.h"
 
 #define BUFFER_SIZE 20000
 
@@ -17,6 +18,11 @@ typedef struct {
     int qmId;
     MQHCONN hConn;
 } MQHCONN_DATA, *MQHCONN_DATA_PTR;
+
+typedef struct {
+    char queueName[MQ_Q_NAME_LENGTH];
+    QueuePtr hobjQueue;
+} MQHOBJ_QUEUE, *MQHOBJ_QUEUE_PTR;
 
 extern MQMESSAGE *gBuffer;
 extern int bufferCount;
@@ -33,10 +39,11 @@ extern pthread_cond_t condp;
 
 extern int getMessageThreadCount;
 extern int workThreadCount;
+extern QueuePtr hconnQueue;
 
-static void freeBuffer();
-static void freeHcon();
-static void enHconnQueue(MQHCONN hConn, int qmId);
 void startGetMessage();
 void clean();
+void dataHandle(void *data);
+int sendMessageToQueue(const MQMESSAGE *message, const char *queue);
+int getHobjByQueueName(const char *queueName, MQHOBJ **destHobj);
 #endif
