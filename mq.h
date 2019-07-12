@@ -46,4 +46,6 @@ void clean();
 void dataHandle(void *data);
 int sendMessageToQueue(const MQMESSAGE *message, const char *queue);
 int getHobjByQueueName(const char *queueName, MQHOBJ **destHobj);
+int setThreadConnection();
+int getThreadConnection();
 #endif

@@ -41,6 +41,7 @@ void stopApplication(int signum);
 void writeMessageToFile(const MQMESSAGE *message);
 void sendMessage(const MQMESSAGE *message);
 void exitFunction();
+void threadExit(int signum);
 
 
 static char *PROJECT_NAME = "exchange";
@@ -49,6 +50,7 @@ static pthread_mutex_t main_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t main_cond = PTHREAD_COND_INITIALIZER;  /* main condition variable */
 static FILE *LOGFILE;
 static char *logFileName = "exchange.log";
+static int threadRunning = 1;
 
 char backupPath[MAX_PATH] = "\0";
 
@@ -189,13 +191,21 @@ void exitFunction()
     stopApplication(0);
 }
 
+void threadExit(int signum)
+{
+    pthread_exit((void *)1);
+}
+
 void stopApplication(int signum)
 {
     log_debug("handle SIGINT signal");
     int rtnVal = 1;
+    threadRunning = 0;
+    pthread_cond_broadcast(&condc);
     if (threads != NULL) {
         for (int i = 0; i < workThreadCount; i++)
-            pthread_cancel(threads[i]);
+            pthread_join(threads[i], NULL);
+
         free(threads);
     }
 
@@ -213,12 +223,18 @@ void stopApplication(int signum)
 
 void *workThread(void *arg)
 {
+    setThreadConnection();
     pthread_t tid = pthread_self();
     MQMESSAGE message;
-    while (1) {
+    while (threadRunning) {
         pthread_mutex_lock(&mtx);
-        while (bufferCount <= 0)
+        while (threadRunning && bufferCount <= 0)
             pthread_cond_wait(&condc, &mtx);
+
+        if (!threadRunning) {
+            pthread_mutex_unlock(&mtx);
+            pthread_exit((void *)1);
+        }
 
         message.data = gBuffer[--bufferCount].data;
         message.size = gBuffer[bufferCount].size;
@@ -268,9 +284,6 @@ void sendMessage(const MQMESSAGE *message)
         *dataEndPos = '<';
     }
     log_info("send to queue %s", queue);
-    while (hconnQueue == NULL) {
-
-    }
     sendMessageToQueue(message, queue);
 }
 

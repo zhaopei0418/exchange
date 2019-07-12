@@ -13,7 +13,6 @@ MQMESSAGE *gBuffer;
 int bufferCount = 0;
 
 MQCHAR QMgrName[MQ_Q_MGR_NAME_LENGTH];   /* queue manager name            */
-MQCD     cd = {MQCD_CLIENT_CONN_DEFAULT};     /* client connection description */
 MQGMO   gmo = {MQGMO_DEFAULT};                /* get message options           */
 MQCBD   cbd = {MQCBD_DEFAULT};                /* callback description          */
 MQCTLO ctlo = {MQCTLO_DEFAULT};               /* control options               */
@@ -35,12 +34,16 @@ MQHOBJ_QUEUE_PTR hobjQueueQueue = NULL;
 int getMessageThreadCount = 1;
 int hobjQueueSize = 0;
 
+static pthread_key_t hconnKey;
+
 static void freeBuffer();
 static void freeHcon();
 static void enHconnQueue(MQHCONN hConn, int qmId);
 static void initConnQueue();
 static void initHobjQueue();
 static void enHobjQueue(const char *queueName, MQHOBJ hobj, MQHOBJ *phobj);
+static MQHCONN getConnection();
+static void freeThreadConnection(void *phconn);
 
 void clean()
 {
@@ -86,15 +89,28 @@ static void freeHcon()
     }
 }
 
+static void freeThreadConnection(void *phconn)
+{
+    if (phconn != NULL) {
+        MQLONG compCode;
+        MQLONG reasCode;
+        MQDISC(phconn, &compCode, &reasCode);
+        if (compCode == MQCC_FAILED) {
+            log_error("free thread connection MQDISC failed.");
+        } else {
+            log_info("free thread connection %p MQDISC successful.", phconn);
+        }
+        free(phconn);
+    }
+}
+
 void startGetMessage()
 {
     gBuffer = (MQMESSAGE *) malloc(sizeof(MQMESSAGE) * BUFFER_SIZE);
-    strncpy(cd.ConnectionName, connectionName, MQ_CONN_NAME_LENGTH);
-    strncpy(cd.ChannelName, channelName, MQ_CHANNEL_NAME_LENGTH);
-    initConnQueue();
+    /* initConnQueue(); */
+    pthread_key_create(&hconnKey, freeThreadConnection);
     /* initHobjQueue(); */
 
-    cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
 
     cbd.CallbackFunction = messageConsumer;
     gmo.Options = MQGMO_NO_SYNCPOINT;
@@ -110,6 +126,12 @@ void startGetMessage()
     }
     for (int i = 0; i < getMessageThreadCount; i++) {
         MQCNO   cno = {MQCNO_DEFAULT};                /* connection description        */
+        MQCD     cd = {MQCD_CLIENT_CONN_DEFAULT};     /* client connection description */
+
+        strncpy(cd.ConnectionName, connectionName, MQ_CONN_NAME_LENGTH);
+        strncpy(cd.ChannelName, channelName, MQ_CHANNEL_NAME_LENGTH);
+        cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
+
         cno.Options |= MQCNO_RECONNECT;  /* reconnect */
         cno.Options |= MQCNO_HANDLE_SHARE_BLOCK;
         cno.ClientConnPtr = &cd;
@@ -246,7 +268,6 @@ static void initConnQueue()
         log_error("init queue error.");
         exit(1);
     }
-    cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
 
     cbd.CallbackFunction = messageConsumer;
     gmo.Options = MQGMO_NO_SYNCPOINT;
@@ -259,6 +280,12 @@ static void initConnQueue()
     log_info("hconnQueueSize is: %d", hconnQueueSize);
     for (int i = 0; i < hconnQueueSize; i++) {
         MQCNO   cno = {MQCNO_DEFAULT};                /* connection description        */
+        MQCD     cd = {MQCD_CLIENT_CONN_DEFAULT};     /* client connection description */
+
+        strncpy(cd.ConnectionName, connectionName, MQ_CONN_NAME_LENGTH);
+        strncpy(cd.ChannelName, channelName, MQ_CHANNEL_NAME_LENGTH);
+        cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
+
         cno.Options |= MQCNO_RECONNECT;  /* reconnect */
         cno.Options |= MQCNO_HANDLE_SHARE_BLOCK;
         cno.ClientConnPtr = &cd;
@@ -286,6 +313,80 @@ static void initConnQueue()
         enHconnQueue(*hcon, 0);
     }
 }
+
+int setThreadConnection()
+{
+    MQHCONN *phconn = (MQHCONN *)malloc(sizeof(MQHCONN));
+    if (phconn == NULL) {
+        log_error("malloc phconn error.");
+        return -1;
+    }
+
+    *phconn = getConnection();
+    if (*phconn == -1) {
+        log_error("get connection error.");
+        free(phconn);
+        return -1;
+    }
+
+    if (pthread_setspecific(hconnKey, phconn) != 0) {
+        log_error("setspecific error.");
+        free(phconn);
+        return -1;
+    }
+
+    log_info("setspecific connection successful.");
+    return 0;
+}
+
+MQHCONN getThreadConnection()
+{
+    MQHCONN result;
+    MQHCONN *phconn = (MQHCONN *)pthread_getspecific(hconnKey);
+    if (phconn != NULL) {
+        log_info("getspecific connection successful.");
+        result = *phconn;
+    } else {
+        log_error("no found specific connection.");
+        result = getConnection();
+    }
+
+    return result;
+}
+
+static MQHCONN getConnection()
+{
+    MQCNO   cno = {MQCNO_DEFAULT};                /* connection description        */
+    MQCD     cd = {MQCD_CLIENT_CONN_DEFAULT};     /* client connection description */
+
+    strncpy(cd.ConnectionName, connectionName, MQ_CONN_NAME_LENGTH);
+    strncpy(cd.ChannelName, channelName, MQ_CHANNEL_NAME_LENGTH);
+    cd.DefReconnect = MQRCN_YES;      /* client automatically reconnection */
+
+    cno.Options |= MQCNO_RECONNECT;  /* reconnect */
+    cno.Options |= MQCNO_HANDLE_SHARE_BLOCK;
+    cno.ClientConnPtr = &cd;
+    cno.Version = MQCNO_VERSION_2;   /* client connection set version 2 */
+
+    MQHCONN hcon;
+
+    MQLONG compCode;
+    MQLONG reasCode;
+
+    MQCONNX(QMgrName,              /* queue manager          */
+            &cno,                  /* connection options     */
+            &hcon,                  /* connection handle      */
+            &compCode,             /* completion code        */
+            &reasCode);            /* reason code            */
+
+    if (compCode == MQCC_FAILED) {
+        log_error("getConnection MQCONNX ended with reason code %d", reasCode);
+        return -1;
+    }
+
+    return hcon;
+}
+
 
 static void enHconnQueue(MQHCONN hConn, int qmId)
 {
@@ -334,17 +435,18 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
     /* MQHOBJ *hobjPtr = NULL; */
     MQLONG compCode;
     MQLONG reasCode;
+    MQHCONN hconn = getThreadConnection();
 
-    MQHCONN_DATA_PTR hconnPtr = NULL;
-    ElementPtr elementPtr = NULL;
-    while ((elementPtr = DeQueue(hconnQueue)) != NULL) {
-        hconnPtr = (MQHCONN_DATA_PTR)elementPtr->data;
-        log_info("sendMessageToQueue hconnPtr: %p, hconn: %ld, hconnQueue size: %d", hconnPtr, hconnPtr->hConn, Size(hconnQueue));
-        break;
-    }
+    /* MQHCONN_DATA_PTR hconnPtr = NULL; */
+    /* ElementPtr elementPtr = NULL; */
+    /* while ((elementPtr = DeQueue(hconnQueue)) != NULL) { */
+    /*     hconnPtr = (MQHCONN_DATA_PTR)elementPtr->data; */
+    /*     log_info("sendMessageToQueue hconnPtr: %p, hconn: %ld, hconnQueue size: %d", hconnPtr, hconnPtr->hConn, Size(hconnQueue)); */
+    /*     break; */
+    /* } */
 
     /* if (getHobjByQueueName(queue, &hobjPtr) == -1) { */
-        MQOPEN(hconnPtr->hConn,          /* connection handle            */
+        MQOPEN(hconn,          /* connection handle            */
                 &od,                     /* object descriptor for queue  */
                 out_options,             /* open options                 */
                 &hobj,                   /* object handle                */
@@ -354,7 +456,7 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
         if (compCode == MQCC_FAILED) {
             log_error("MQOPEN of '%.48s' ended with reason code %d",
                     &od.ObjectName, reasCode);
-            EnQueue(hconnQueue, elementPtr);
+            /* EnQueue(hconnQueue, elementPtr); */
             return -1;
         }
     /* } else { */
@@ -366,7 +468,7 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
     md.Encoding = ccsid;
     pmo.Options = MQPMO_NO_SYNCPOINT | MQPMO_FAIL_IF_QUIESCING;  /* put message options */
 
-    MQPUT(hconnPtr->hConn,               /* connection handle             */
+    MQPUT(hconn,               /* connection handle             */
             hobj,                        /* object handle                 */
             &md,                         /* message descriptor            */
             &pmo,                        /* put message options (datagram)*/
@@ -384,7 +486,7 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
         /* } else { */
         /*     enHobjQueue(queue, hobj, hobjPtr); */
         /* } */
-        MQCLOSE(hconnPtr->hConn,       /* connection handle    */
+        MQCLOSE(hconn,       /* connection handle    */
                 &hobj,                 /* object handle        */
                 close_options,         /* close options        */
                 &compCode,             /* completion code      */
@@ -395,7 +497,7 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
         } else {
             log_info("close queue %s successful.", queue);
         }
-        EnQueue(hconnQueue, elementPtr);
+        /* EnQueue(hconnQueue, elementPtr); */
         return -1;
     }
     log_info("send message to queue %s successful.", queue);
@@ -405,7 +507,7 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
     /* } else { */
     /*     enHobjQueue(queue, hobj, hobjPtr); */
     /* } */
-    MQCLOSE(hconnPtr->hConn,       /* connection handle    */
+    MQCLOSE(hconn,       /* connection handle    */
             &hobj,                 /* object handle        */
             close_options,         /* close options        */
             &compCode,             /* completion code      */
@@ -416,8 +518,8 @@ int sendMessageToQueue(const MQMESSAGE *message, const char *queue)
     } else {
         log_info("close queue %s successful.", queue);
     }
-    EnQueue(hconnQueue, elementPtr);
-    log_info("sendMessageToQueue hconnQueue size: %d", Size(hconnQueue));
+    /* EnQueue(hconnQueue, elementPtr); */
+    /* log_info("sendMessageToQueue hconnQueue size: %d", Size(hconnQueue)); */
     return 0;
 }
 
