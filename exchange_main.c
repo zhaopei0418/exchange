@@ -45,7 +45,7 @@ void threadExit(int signum);
 
 
 static char *PROJECT_NAME = "exchange";
-static char *VERSION_NO = "1.1";
+static char *VERSION_NO = "1.0";
 static pthread_mutex_t main_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t main_cond = PTHREAD_COND_INITIALIZER;  /* main condition variable */
 static FILE *LOGFILE;
