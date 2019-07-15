@@ -4,6 +4,9 @@ ifdef USE_REDIS
 	OREDIS = redis_tool.o
 endif
 
+CURR_DIR := $(shell pwd)/$(lastword $(MAKEFILE_LIST))
+CURR_DIR := $(shell dirname $(CURR_DIR))
+
 TARGET = exchange
 OBJECTS = exchange_main.o log.o error.o base64.o config.o mq.o tool.o queue.o $(OREDIS)
 MQ_INSTALL_PATH = /opt/mqm
@@ -12,10 +15,11 @@ MQ_INSTALL_PATH = /opt/mqm
 
 DEFS += $(USE_REDIS)
 CC_FLAGS += $(DEFS) -std=c11 -O3 -m64 -I $(MQ_INSTALL_PATH)/inc -I include
-CC_LINK_FLAGS = -L $(MQ_INSTALL_PATH)/lib64 -L lib -lmqic_r -lpthread -luuid -lcjson $(LREDIS)
+CC_STATIC_LINK = -L $(CURR_DIR)/lib -lcjson
+CC_LINK_FLAGS = -L $(MQ_INSTALL_PATH)/lib64 -lmqic_r -lpthread -luuid $(LREDIS)
 
 $(TARGET): $(OBJECTS)
-	cc $(CC_FLAGS) $(CC_LINK_FLAGS) -o $@ $^
+	cc $(CC_FLAGS) $(CC_LINK_FLAGS) -o $@ $^ $(CC_STATIC_LINK)
 
 log.o: log/log.c log/log.h
 	cc $(CC_FLAGS) -c $^
@@ -43,6 +47,14 @@ queue.o: queue/queue.c queue/queue.h
 
 exchange_main.o: exchange_main.c log/log.h err/error.h mq.h
 	cc $(CC_FLAGS) -c $^
+
+cjson:
+	cd lib/cJSON/ && \
+	mkdir -v build && \
+	cd build && \
+	cmake -DBUILD_SHARED_LIBS=Off .. && \
+	make && \
+	cp -v libcjson.a ../../
 
 %.o: %.c
 	@echo "using generic rule"

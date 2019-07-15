@@ -198,7 +198,7 @@ void threadExit(int signum)
 
 void stopApplication(int signum)
 {
-    log_debug("handle SIGINT signal");
+    /* log_debug("handle SIGINT signal"); */
     int rtnVal = 1;
     threadRunning = 0;
     pthread_cond_broadcast(&condc);
