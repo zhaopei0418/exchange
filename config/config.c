@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
-#include <cJSON.h>
 #include "config.h"
 #include "../log/log.h"
 
@@ -11,8 +10,10 @@
 struct DefaultTarget defaultTarget;
 struct QueueManager queueManagers[MAX_QUEUEMANAGER_LENGTH];
 struct DxpIdDistribution dxpIdDistributions[MAX_DXP_DISTRIBUTION_LENGTH];
+struct MsgTypeDistribution msgTypeDistributions[MAX_MSG_TYPE_DISTRIBUTION_LENGTH];
 int queueManagerSize = 0;
 int dxpIdDistributionSize = 0;
+cJSON_bool conditionMutualExclusion = cJSON_True;
 
 static cJSON *readConfig(const char *configPath);
 static int getFileSize(const char *filePath);
@@ -40,7 +41,7 @@ static cJSON *readConfig(const char *configPath)
 
     if (count == 0)
         goto end;
-    configJson = cJSON_Parse(jsonData);
+    configJson = cJSON_Parse((const char *)jsonData);
     if (configJson == NULL) {
         const char *errorPtr = cJSON_GetErrorPtr();
         if (errorPtr != NULL)

@@ -199,7 +199,6 @@ void threadExit(int signum)
 void stopApplication(int signum)
 {
     /* log_debug("handle SIGINT signal"); */
-    int rtnVal = 1;
     threadRunning = 0;
     pthread_cond_broadcast(&condc);
     if (threads != NULL) {
@@ -262,6 +261,7 @@ void *workThread(void *arg)
         message.data = NULL;
         message.size = 0;
     }
+    return (void *)1;
 }
 
 void sendMessage(const MQMESSAGE *message)
@@ -269,8 +269,8 @@ void sendMessage(const MQMESSAGE *message)
     char *dataStart = "<ReceiverId>";
     char *dataEnd = "</ReceiverId>";
 
-    char *dataStartPos = strstr(message->data, dataStart);
-    char *dataEndPos = strstr(message->data, dataEnd);
+    char *dataStartPos = strstr((char *)message->data, dataStart);
+    char *dataEndPos = strstr((char *)message->data, dataEnd);
     char queue[MQ_Q_NAME_LENGTH];
 
     if (dataStartPos && dataEndPos && dataEndPos > dataStartPos) {
@@ -322,8 +322,8 @@ void writeMessageToFile(const MQMESSAGE *message)
         char *dataStart = "<Data>";
         char *dataEnd = "</Data>";
 
-        char *dataStartPos = strstr(message->data, dataStart);
-        char *dataEndPos = strstr(message->data, dataEnd);
+        char *dataStartPos = strstr((char *)message->data, dataStart);
+        char *dataEndPos = strstr((char *)message->data, dataEnd);
 
         if (dataStartPos && dataEndPos && dataEndPos > dataStartPos) {
             *dataEndPos = '\0';
@@ -331,7 +331,7 @@ void writeMessageToFile(const MQMESSAGE *message)
             size_t dataLength = (dataEndPos - dataStartPos) * 3 / 4;
             char *startPos = dataStartPos + strlen(dataStart);
             log_info("data is %s", startPos);
-            char *odata = (char *)malloc(sizeof(char) * dataLength);
+            unsigned char *odata = (unsigned char *)malloc(sizeof(unsigned char) * dataLength);
             size_t bytes = base64_decode(startPos, odata);
             odata[bytes] = '\0';
             log_info("bytes is %u", bytes);
@@ -415,7 +415,9 @@ int main(int argc, char **argv)
     signal(SIGINT, stopApplication);
     signal(SIGQUIT, stopApplication);
 
-    /* initConnectionRedis(); */
+#ifdef USE_REDIS
+    initConnectionRedis();
+#endif
     /* char testFuncPtr[20]; */
     /* sprintf(testFuncPtr, "%lld", testFunction); */
     /* log_info("testFuncPtr is: %s", testFuncPtr); */

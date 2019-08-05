@@ -14,12 +14,24 @@
             "dxpId": "DXPENT0000011952",
             "qmId": 1,
             "queue": "GGFW_TO_DXP"
-        },{
+        }, {
             "dxpId": "DXPENT0000011951",
             "qmId": 1,
             "queue": "ENT_TO_CUS"
         }
     ],
+    "msgTypeDistribution": [
+        {
+            "msgType": "CEB312Message",
+            "qmId": 0,
+            "queue": "GGFW_TO_DXP"
+        }, {
+            "msgType": "CEB412Message",
+            "qmId": 0,
+            "queue": "ENT_TO_CUS"
+        }
+    ],
+    "conditionMutualExclusion": true,
     "defaultTarget": {
         "qmId": 1,
         "queue": "CUS_TO_ENT"
